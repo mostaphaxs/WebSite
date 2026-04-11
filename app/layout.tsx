@@ -4,6 +4,7 @@ import "./globals.css";
 import PageReveal from "./components/canvas/PageTransition";
 
 import SmoothScroll from "./components/SmoothScroll"; // Import your new wrapper
+import WhatsAppButton from "./components/sections/WhatsAppButton";
 
 export const metadata: Metadata = {
   title: "Hatim Idrissi | Architecte d’intérieur",
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </SmoothScroll>
         </PageReveal>
+        <WhatsAppButton />
       </body>
     </html>
   );
