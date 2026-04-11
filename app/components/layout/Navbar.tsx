@@ -1,62 +1,129 @@
 "use client";
-import React, { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import React, { useState } from "react";
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from "motion/react";
 
 export default function Navbar() {
-  const nameRef = useRef(null);
+  const [isHovered, setIsHovered] = useState<string | null>(null);
 
-  useGSAP(() => {
-    // ONLY animate the name characters
-    gsap.from(".name-char", {
-      y: 50,
-      opacity: 0,
-      rotateX: -90,
-      stagger: 0.04,
-      duration: 1.2,
-      ease: "power4.out",
-      delay: 0.2
-    });
-  }, { scope: nameRef });
+  // 1. SCROLL ANIMATIONS
+  const { scrollY } = useScroll();
+  
+  // Shrink height from 112px to 80px
+  const navHeight = useTransform(scrollY, [0, 100], ["112px", "80px"]);
+  // Increase blur and opacity of background
+  const navBg = useTransform(scrollY, [0, 100], ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.9)"]);
+  const navShadow = useTransform(scrollY, [0, 100], ["0px 0px 0px rgba(0,0,0,0)", "0px 10px 30px rgba(0,0,0,0.06)"]);
+  // Move the whole nav bar slightly up/down
+  const navY = useTransform(scrollY, [0, 100], ["0px", "0px"]);
 
-  const splitText = (text: string) => {
-    return text.split("").map((char, i) => (
-      <span key={i} className="name-char inline-block whitespace-pre will-change-transform">
-        {char}
-      </span>
-    ));
+  // 2. 3D MOUSE PHYSICS (for Logo)
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
 
   return (
     <>
-      {/* THE SPACER: This pushes all other content down so it doesn't hide behind the nav */}
-      <div className="h-24 md:h-32 w-full" />
-
-      <nav className="fixed top-0 left-0 w-full z-[100] px-6 py-6 md:px-16 md:py-10 flex justify-between items-start bg-white/90 backdrop-blur-md border-b border-zinc-100">
-        <div ref={nameRef} className="flex flex-col">
-       
-          
-          <div style={{ perspective: "1000px" }}>
-            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-none text-zinc-900 flex overflow-hidden">
-              {splitText("Hatim Idrissi")}
+      <nav 
+        className="fixed top-0 left-0 w-full z-[100] px-6 md:px-16 flex justify-between items-center backdrop-blur-md transition-all duration-500"
+        style={{ 
+          height: navHeight as any, 
+          backgroundColor: navBg as any,
+          boxShadow: navShadow as any,
+          y: navY as any
+        }}
+      >
+        
+        {/* --- 3D FLOATING LOGO (Pivots on Mouse) --- */}
+        <motion.div 
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => { x.set(0); y.set(0); }}
+          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+          className="flex flex-col group cursor-pointer perspective-[1000px]"
+        >
+          <div className="relative" style={{ transformStyle: "preserve-3d" }}>
+            <h1 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-none text-zinc-900 group-hover:translate-z-[30px] transition-transform duration-500">
+              Hatim <span className="text-zinc-400 group-hover:text-zinc-900">Idrissi</span>
+            </h1>
+            {/* 3D Reflection layer */}
+            <h1 className="absolute inset-0 text-xl md:text-2xl font-black uppercase tracking-tighter leading-none text-zinc-100 translate-z-[-15px] blur-[1px]">
+              Hatim Idrissi
             </h1>
           </div>
-
-          <p className="text-[10px] md:text-[11px] font-medium tracking-[0.35em] text-zinc-400 uppercase mt-3">
+          <motion.p 
+            style={{ opacity: useTransform(scrollY, [0, 50], [1, 0]) }}
+            className="text-[7px] font-black tracking-[0.5em] text-zinc-400 uppercase mt-2"
+          >
             Architecte d’intérieur
-          </p>
+          </motion.p>
+        </motion.div>
+
+        {/* --- DYNAMIC NAVIGATION --- */}
+        <div className="hidden lg:flex items-center gap-2">
+          {["Aquatique", "Végétal", "Formation"].map((link) => (
+            <motion.a 
+              key={link} 
+              href={`#${link.toLowerCase()}`}
+              onHoverStart={() => setIsHovered(link)}
+              onHoverEnd={() => setIsHovered(null)}
+              whileHover={{ translateZ: 20, y: -2 }}
+              className="relative px-5 py-2 transition-all duration-300 perspective-[500px]"
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <span className={`relative z-10 text-[9px] font-black uppercase tracking-[0.2em] transition-colors duration-500 ${isHovered === link ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                {link}
+              </span>
+              
+              {/* Floating Dock Indicator */}
+              {isHovered === link && (
+                <motion.div 
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-white shadow-[0_10px_20px_rgba(0,0,0,0.08)] border border-zinc-100 rounded-lg -z-10"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+            </motion.a>
+          ))}
+
+          {/* --- THE BLACK BLOCK BUTTON --- */}
+          <motion.button 
+            whileHover={{ 
+              scale: 1.05, 
+              translateZ: 40,
+              boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="relative ml-6 px-8 py-3 bg-zinc-900 group overflow-hidden"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            {/* Shine animation on scroll/hover */}
+            <motion.div 
+               animate={{ x: ["-100%", "200%"] }}
+               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+               className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[45deg]"
+            />
+            
+            <span className="relative z-10 text-[9px] font-black uppercase tracking-[0.4em] text-white">
+              Contact
+            </span>
+            
+            {/* 3D Depth Layer for Button */}
+            <div className="absolute -bottom-1 left-0 w-full h-1 bg-black" />
+          </motion.button>
         </div>
 
-        {/* Links stay static so they are immediately usable */}
-        <div className="hidden lg:flex gap-12 items-center mt-6">
-          {["Aquatique", "Design Végétal", "Formation", "Blog"].map((item) => (
-            <a key={item} href="#" className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400 hover:text-zinc-900 transition-colors">
-              {item}
-            </a>
-          ))}
-          <button className="bg-zinc-900 text-white px-10 py-4 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-green-700 transition-all">
-            Contact
-          </button>
+        {/* --- MOBILE COMPACT MENU --- */}
+        <div className="lg:hidden flex flex-col gap-1 w-6">
+          <motion.div animate={{ width: isHovered ? "100%" : "60%" }} className="h-[2px] bg-zinc-900 ml-auto" />
+          <div className="h-[2px] w-full bg-zinc-900" />
         </div>
       </nav>
     </>

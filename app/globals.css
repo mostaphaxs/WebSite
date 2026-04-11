@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  --animate-spin-slow: spin 8s linear infinite;
   --color-brand-green: #2E7D32;
   --color-brand-dark: #1a1a1a;
   --color-brand-beige: #f4f4f2; /* Professional architectural beige */
@@ -33,4 +34,48 @@ body {
 .pro-clip-path {
   /* This creates a sharp, asymmetrical geometric shape */
   clip-path: polygon(0 0, 100% 0, 100% 90%, 85% 100%, 0 100%);
+}
+
+
+@layer components {
+  .pro-clip-path {
+    /* The unique architectural shape */
+    clip-path: polygon(0% 15%, 15% 0%, 100% 0%, 100% 85%, 85% 100%, 0% 100%);
+    position: relative;
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* THE LED GLOW EFFECT */
+  .led-glow {
+    filter: drop-shadow(0 0 15px rgba(21, 128, 61, 0.3)); /* Subtle green glow */
+    transition: filter 0.6s ease;
+  }
+
+  .group:hover .led-glow {
+    filter: drop-shadow(0 0 25px rgba(21, 128, 61, 0.6)); /* Intensify on hover */
+  }
+
+  /* THE LIGHT SWEEP (The "Glass" Effect) */
+  .light-sweep::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    transition: all 0.8s ease;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .group:hover .light-sweep::after {
+    left: 120%; /* Light sweeps across the image on hover */
+  }
 }
