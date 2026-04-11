@@ -52,7 +52,7 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative h-[calc(100vh-6rem)] md:h-[calc(100vh-8rem)] flex flex-col justify-center px-4 md:px-12 overflow-hidden bg-[#FDFDFD]">
+    <section className="relative h-[calc(100vh-6rem)]  md:h-[calc(100vh-8rem)] flex flex-col justify-center px-20 md:px-12 overflow-hidden bg-[#FDFDFD]">
       
       {/* 1. BACKGROUND WATERMARK */}
       <motion.div style={{ y: y1 }} className="absolute -left-10 top-0 pointer-events-none select-none opacity-[0.02] z-0">
