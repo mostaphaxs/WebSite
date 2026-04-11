@@ -1,38 +1,33 @@
 "use client";
-import { motion } from "motion/react";
+import React from "react";
+import Image from "next/image";
 
 export default function Philosophy() {
   return (
-    <section className="py-32 px-8 md:px-20 bg-white">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <section className="py-32 px-8 md:px-20 bg-white/50 backdrop-blur-sm">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
         
-        <div>
-          <h2 className="text-3xl font-bold uppercase mb-8 text-brand-dark tracking-wide">
-            Notre Philosophie
+        <div className="order-2 md:order-1">
+          <h2 className="text-[10px] font-bold uppercase tracking-[0.5em] text-green-700 mb-8">
+            Notre Vision
           </h2>
-          <div className="space-y-6 text-gray-600 leading-relaxed font-light">
+          <div className="space-y-8 text-zinc-600 leading-relaxed font-light text-lg">
             <p>
-              Naturel Design, fondé et dirigé par Hatim Idrissi, excelle dans l'architecture d'intérieur au Maroc. En tant que pionniers du design écologique, nous privilégions l'innovation et la durabilité dans chacun de nos projets.
+              <span className="font-bold text-zinc-900 italic">Naturel Design</span> n'est pas seulement un studio d'architecture ; c'est un laboratoire d'innovation durable basé à Casablanca.
             </p>
             <p>
-              Convaincus que notre environnement influence notre qualité de vie, nous nous engageons à créer des espaces qui améliorent à la fois l'esthétique et le bien-être.
-            </p>
-            <p>
-              Sous la direction visionnaire de Hatim Idrissi, notre équipe travaille à transformer les espaces en lieux où beauté et fonctionnalité se rencontrent harmonieusement. Nous utilisons des matériaux éco-responsables et les dernières technologies pour maximiser l'efficacité énergétique et minimiser l'impact environnemental.
+              Nous croyons que chaque mur doit respirer. Sous la direction de <span className="text-zinc-900 font-semibold">Hatim Idrissi</span>, nous fusionnons les technologies aquatiques et végétales pour créer des environnements qui guérissent et inspirent.
             </p>
           </div>
         </div>
 
-        <div className="h-[600px] bg-gray-100 p-8 flex items-end relative overflow-hidden group">
-          <img 
-            src="/hatim-idrissi-portrait.jpg" 
-            alt="Hatim Idrissi" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        <div className="order-1 md:order-2 relative h-[700px] w-full pro-clip-path overflow-hidden shadow-xl">
+          <Image 
+            src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2560" 
+            alt="Vision Architecturale" 
+            fill
+            className="object-cover grayscale hover:grayscale-0 transition-all duration-1000"
           />
-          <div className="relative z-10 bg-white p-6 shadow-xl max-w-sm">
-            <p className="text-sm font-bold uppercase tracking-widest text-brand-green mb-2">Le Fondateur</p>
-            <p className="text-xl font-medium text-brand-dark">Hatim Idrissi</p>
-          </div>
         </div>
 
       </div>

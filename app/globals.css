@@ -1,28 +1,36 @@
 @import "tailwindcss";
 
-/* If you need the Green specifically */
 @theme {
   --color-brand-green: #2E7D32;
   --color-brand-dark: #1a1a1a;
-}
-
-/* Base styles for a pro feel */
-html {
-  scroll-behavior: smooth;
+  --color-brand-beige: #f4f4f2; /* Professional architectural beige */
 }
 
 body {
-  overflow-x: hidden;
+  background-color: var(--color-brand-beige);
+  /* The "Noise" trick: creates a high-end paper texture */
+  background-image: url("https://www.transparenttextures.com/patterns/p6.png");
 }
 
-/* Custom Animation for the Partners Logo Bar */
-@keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+
+/* A sophisticated radial gradient that follows the user or stays fixed */
+.pro-bg-gradient {
+  background: radial-gradient(
+    circle at 50% -20%,
+    rgba(46, 125, 50, 0.05) 0%,
+    rgba(255, 255, 255, 0) 50%
+  );
 }
 
-.animate-infinite-scroll {
-  display: flex;
-  width: max-content;
-  animation: scroll 30s linear infinite;
+/* Subtle architectural grid */
+.bg-grid {
+  background-size: 100px 100px;
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px);
+}
+
+.pro-clip-path {
+  /* This creates a sharp, asymmetrical geometric shape */
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 85% 100%, 0 100%);
 }
