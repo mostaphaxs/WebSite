@@ -30,22 +30,34 @@ export default function Navbar() {
   };
 
   // Entrance Animation Variants
-  const navVariants: Variants = {
-  hidden: { y: -50, opacity: 0 },
+ const navVariants: Variants = {
+  hidden: { 
+    opacity: 0 
+  },
   visible: { 
-    y: 0, 
     opacity: 1,
     transition: { 
-      duration: 0.8, 
-      ease: [0.22, 1, 0.36, 1], // TypeScript now accepts this because of the 'Variants' type
-      staggerChildren: 0.08
+      staggerChildren: 0.1, 
+      delayChildren: 0.3, 
+      duration: 1.2, 
+      ease: "circOut" // TypeScript is now happy because of the 'Variants' type
     }
   }
 };
 
   const itemVariants: Variants = {
-  hidden: { y: -10, opacity: 0 },
-  visible: { y: 0, opacity: 1 }
+  hidden: { 
+    opacity: 0 
+  },
+  visible: { 
+    opacity: 1,
+    transition: { 
+      staggerChildren: 0.1, 
+      delayChildren: 0.3, 
+      duration: 1.2, 
+      ease: "circOut" // TypeScript is now happy because of the 'Variants' type
+    }
+  }
 };
 
   return (
