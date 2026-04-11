@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring } from "motion/react";
+import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring, Variants } from "motion/react";
 import Image from "next/image";
 
 export default function Philosophy() {
@@ -25,14 +25,20 @@ export default function Philosophy() {
 
   const imgY = useTransform(scrollYProgress, [0, 1], [-40, 40]);
 
-  const textVariant = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.1, duration: 0.8 }
-    })
-  };
+  const nameVariants: Variants = {
+  hidden: { 
+    opacity: 0 
+  },
+  visible: { 
+    opacity: 1,
+    transition: { 
+      staggerChildren: 0.1, 
+      delayChildren: 0.3, 
+      duration: 1.2, 
+      ease: "circOut" // TypeScript is now happy because of the 'Variants' type
+    }
+  }
+};
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -52,7 +58,7 @@ export default function Philosophy() {
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex flex-col items-start mb-20 gap-4">
           <motion.h2 
-            custom={1} initial="hidden" animate={isInView ? "visible" : "hidden"} variants={textVariant}
+            custom={1} initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants}
             className="text-4xl md:text-6xl font-black text-zinc-900 leading-[0.85] tracking-tighter uppercase italic"
           >
             NOTRE <br /> 
@@ -77,14 +83,14 @@ export default function Philosophy() {
 
           {/* Text Content */}
           <div className="lg:col-span-7 order-1 lg:order-2 space-y-12 lg:pl-10">
-            <motion.div custom={2} initial="hidden" animate={isInView ? "visible" : "hidden"} variants={textVariant} className="space-y-6">
+            <motion.div custom={2} initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants} className="space-y-6">
               <p className="text-zinc-900 text-2xl md:text-4xl leading-tight font-light italic tracking-tight">
                 "Le design est le <span className="text-green-700 font-medium">reflet</span> des pensées et du mode de vie de chacun."
               </p>
               <div className="w-24 h-[1px] bg-green-700/30" />
             </motion.div>
 
-            <motion.div custom={3} initial="hidden" animate={isInView ? "visible" : "hidden"} variants={textVariant} className="grid grid-cols-1 md:grid-cols-2 gap-8 text-zinc-500 text-sm leading-relaxed">
+            <motion.div custom={3} initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants} className="grid grid-cols-1 md:grid-cols-2 gap-8 text-zinc-500 text-sm leading-relaxed">
               <p>Chez Naturel Design, nous comprenons que l'architecture intérieure joue un rôle central dans l'amélioration du quotidien.</p>
               <p className="border-l border-zinc-100 pl-6 italic">Nous intervenons avec réactivité et précision dans l'optimisation des volumes.</p>
             </motion.div>
@@ -94,7 +100,7 @@ export default function Philosophy() {
               custom={4} 
               initial="hidden" 
               animate={isInView ? "visible" : "hidden"} 
-              variants={textVariant} 
+              variants={nameVariants} 
               className="pt-12 flex flex-col items-start perspective-[1200px]"
             >
               <div 
