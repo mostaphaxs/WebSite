@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const reviews = [
   {
@@ -28,20 +28,24 @@ const reviews = [
     name: "Elena Rossi",
     role: "Design d'Espace",
     comment: "Naturel Design a su capturer l'essence de notre projet hôtelier.",
-    stars: 4,
+    stars: 5,
     img: "https://i.pravatar.cc/150?u=elena"
   }
 ];
 
+// Replaced generic green with the Copper from your Logo
+const BrandCopper = "#D08C63";
+const BrandObsidian = "#0B0D10";
+
 const Icons = {
   Star: () => (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="#15803d" stroke="none"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+    <svg width="10" height="10" viewBox="0 0 24 24" fill={BrandCopper} stroke="none"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
   ),
-  Houzz: ({ size = 20 }) => (
+  Houzz: ({ size = 18 }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M12 24V14.86h7.14V24H12zM4.86 14.86h7.14v9.14H4.86v-9.14zM12 0v9.14H4.86V0H12zM19.14 0v18.28H12V9.14h7.14V0z"/></svg>
   ),
   ArrowUp: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
   )
 };
 
@@ -53,142 +57,165 @@ export default function AboutAndFooter() {
     offset: ["start end", "end start"]
   });
 
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -250]);
+  const opacityParallax = useTransform(scrollYProgress, [0.5, 1], [0, 0.03]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <div ref={containerRef} className="bg-[#FDFDFD] overflow-hidden">
+    <div ref={containerRef} className="bg-white overflow-hidden selection:bg-[#D08C63] selection:text-white">
       
-      {/* --- REVIEWS SECTION --- */}
-      <section className="py-40 bg-zinc-50/50 relative border-t border-zinc-100">
-        <div className="px-6 md:px-12 lg:px-24 mb-16 relative z-10">
-          <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic text-zinc-900 leading-none">
-            L'EXPÉRIENCE <br /> <span className="text-green-700 font-signature normal-case text-5xl">Naturel Design</span>
-          </h3>
-          <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.4em] mt-6">Témoignages & Avis Clients</p>
+      {/* --- REVIEWS: GALLERY STYLE --- */}
+      <section className="py-32 relative border-t border-zinc-200">
+        <div className="px-6 md:px-12 lg:px-24 mb-20 relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <p className="text-[9px] text-[#D08C63] font-black uppercase tracking-[0.4em] mb-6">Témoignages & Avis</p>
+            <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-[#0B0D10] leading-[0.9]">
+              L'EXPÉRIENCE <br /> 
+              <span className="italic font-light tracking-normal text-zinc-400">NATUREL DESIGN</span>
+            </h3>
+          </div>
+          
+          <div className="flex items-center gap-6">
+            <div className="flex -space-x-3">
+              {reviews.map((r, i) => (
+                <img key={i} src={r.img} className="w-10 h-10 rounded-none border border-white grayscale" alt="" />
+              ))}
+            </div>
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">+149 Clients <br/> Satisfaits</span>
+          </div>
         </div>
 
-        <div className="flex overflow-hidden relative py-10 perspective-[2000px]">
-          <div className="flex animate-marquee hover:[animation-play-state:paused] gap-8 px-4">
-            {[...reviews, ...reviews].map((review, i) => (
+        {/* Cinematic Marquee */}
+        <div className="flex overflow-hidden relative py-10 perspective-[2000px] border-y border-zinc-100 bg-zinc-50/30">
+          <div className="flex animate-marquee hover:[animation-play-state:paused] gap-8 px-4 items-center">
+            {[...reviews, ...reviews, ...reviews].map((review, i) => (
               <motion.div 
                 key={i}
-                whileHover={{ y: -15, rotateY: 5, rotateX: 5 }}
-                className="w-[350px] flex-shrink-0 bg-white p-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-zinc-100 relative group transition-all duration-500 rounded-sm"
-                style={{ transformStyle: "preserve-3d" }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="w-[380px] h-[220px] flex-shrink-0 bg-white p-8 border border-zinc-200 relative group transition-all duration-500 flex flex-col justify-between cursor-grab active:cursor-grabbing"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-4 mb-6 relative z-10">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-green-700/10 grayscale group-hover:grayscale-0 transition-all duration-700">
-                    <img src={review.img} alt={review.name} className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700" />
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                      <img src={review.img} alt={review.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#0B0D10] uppercase tracking-widest text-[10px]">{review.name}</h4>
+                      <p className="text-[8px] text-[#D08C63] font-black tracking-[0.3em] uppercase mt-1">{review.role}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-black text-zinc-900 uppercase tracking-tighter text-sm">{review.name}</h4>
-                    <p className="text-[10px] text-zinc-400 font-mono tracking-widest uppercase">{review.role}</p>
+                  <div className="flex gap-[2px]">
+                    {[...Array(review.stars)].map((_, i) => <Icons.Star key={i} />)}
                   </div>
                 </div>
-                <div className="flex gap-1 mb-4 relative z-10">
-                  {[...Array(review.stars)].map((_, i) => <Icons.Star key={i} />)}
-                </div>
-                <p className="text-zinc-600 text-sm leading-relaxed italic relative z-10 group-hover:text-zinc-900 transition-colors">
+                
+                <p className="text-zinc-500 text-sm leading-relaxed font-light mt-6 group-hover:text-[#0B0D10] transition-colors duration-300">
                   "{review.comment}"
                 </p>
-                <div className="absolute bottom-4 right-4 text-[40px] font-black text-zinc-50 opacity-0 group-hover:opacity-100 transition-all -z-10">”</div>
+                
+                {/* Structural accent line */}
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#D08C63] group-hover:w-full transition-all duration-700 ease-out" />
               </motion.div>
             ))}
           </div>
         </div>
-
-        <div className="mt-20 px-6 md:px-12 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex items-center gap-4">
-                <div className="flex -space-x-3">
-                    {reviews.map((r, i) => (
-                        <img key={i} src={r.img} className="w-8 h-8 rounded-full border-2 border-white grayscale" alt="" />
-                    ))}
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">+149 Clients Satisfaits</span>
-            </div>
-            
-            <a href="#" className="flex items-center gap-4 group">
-               <span className="text-xs font-black tracking-widest uppercase border-b border-zinc-900 group-hover:text-green-700 group-hover:border-green-700 transition-all">Consulter sur Houzz</span>
-               <Icons.Houzz size={20} />
-            </a>
-        </div>
       </section>
 
-      {/* --- FOOTER SECTION --- */}
-      <footer className="bg-zinc-950 pt-32 pb-12 px-6 md:px-12 lg:px-24 text-white relative overflow-hidden">
-        {/* Parallax Background Text */}
+      {/* --- FOOTER: ARCHITECTURAL BLUEPRINT STYLE --- */}
+      <footer className="bg-[#0B0D10] pt-32 pb-12 px-6 md:px-12 lg:px-24 text-white relative overflow-hidden">
+        
+        {/* Giant Structural Background Typography */}
         <motion.div 
-          style={{ y: yParallax }} 
-          className="absolute top-20 -right-20 text-[20vw] font-black text-white/[0.02] select-none pointer-events-none italic leading-none whitespace-nowrap"
+          style={{ y: yParallax, opacity: opacityParallax }} 
+          className="absolute top-0 left-0 w-full text-[18vw] font-black text-white select-none pointer-events-none uppercase leading-none tracking-tighter text-center"
         >
-          HATIM IDRISSI
+          NATUREL
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10">
-          {/* Contact Info */}
-          <div className="lg:col-span-5">
-            <p className="text-[#D4AF37] text-[10px] font-black tracking-[0.4em] uppercase mb-8">Contact Direct</p>
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-tight mb-12">
-              asdas@gmail.com <br />
-              <span className="text-zinc-500 hover:text-white transition-colors cursor-pointer">+212 6 00 00 00 00</span>
-            </h2>
-            <div className="flex gap-8">
+          
+          {/* Main Contact Hub */}
+          <div className="lg:col-span-6">
+            <p className="text-[#D08C63] text-[9px] font-black tracking-[0.4em] uppercase mb-8 flex items-center gap-4">
+              <span className="w-8 h-[1px] bg-[#D08C63]" />
+              Contact Direct
+            </p>
+            <a href="mailto:asdas@gmail.com" className="group block w-fit">
+              <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4 text-white group-hover:text-[#D08C63] transition-colors duration-500">
+                asdas@gmail.com
+              </h2>
+            </a>
+            <h3 className="text-2xl md:text-3xl font-light tracking-widest text-zinc-600 hover:text-white transition-colors duration-300 cursor-pointer mb-16">
+              +212 6 00 00 00 00
+            </h3>
+            
+            {/* Social Links with Magnetic Hover Style */}
+            <div className="flex gap-8 border-t border-white/10 pt-8 w-fit">
               {['Instagram', 'LinkedIn', 'Houzz'].map((social) => (
-                <a key={social} href="#" className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
-                  {social}
+                <a key={social} href="#" className="relative group overflow-hidden pb-1">
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 group-hover:text-white transition-colors duration-300">
+                    {social}
+                  </span>
+                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white group-hover:w-full transition-all duration-500 ease-out" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="lg:col-span-4 grid grid-cols-2 gap-8">
+          {/* Site Blueprint / Navigation */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-12 pt-8 lg:pt-0">
             <div>
-              <p className="text-zinc-600 text-[10px] font-black tracking-widest uppercase mb-6">Exploration</p>
-              <ul className="flex flex-col gap-4">
+              <p className="text-zinc-600 text-[9px] font-black tracking-[0.3em] uppercase mb-8 border-b border-white/10 pb-4">Exploration</p>
+              <ul className="flex flex-col gap-5">
                 {['Aquatique', 'Végétal', 'Formation', 'Boutique'].map((item) => (
-                  <li key={item}><a href="#" className="text-sm text-zinc-400 hover:text-white transition-all uppercase tracking-tighter font-bold">{item}</a></li>
+                  <li key={item}>
+                    <a href="#" className="text-xs text-zinc-400 hover:text-white hover:translate-x-2 inline-block transition-all duration-300 uppercase tracking-[0.2em] font-bold">
+                      {item}
+                    </a>
+                  </li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="text-zinc-600 text-[10px] font-black tracking-widest uppercase mb-6">Agence</p>
-              <ul className="flex flex-col gap-4">
+              <p className="text-zinc-600 text-[9px] font-black tracking-[0.3em] uppercase mb-8 border-b border-white/10 pb-4">Agence</p>
+              <ul className="flex flex-col gap-5">
                 {['Vision', 'Équipe', 'Presse', 'Mentions'].map((item) => (
-                  <li key={item}><a href="#" className="text-sm text-zinc-400 hover:text-white transition-all uppercase tracking-tighter font-bold">{item}</a></li>
+                  <li key={item}>
+                    <a href="#" className="text-xs text-zinc-400 hover:text-white hover:translate-x-2 inline-block transition-all duration-300 uppercase tracking-[0.2em] font-bold">
+                      {item}
+                    </a>
+                  </li>
                 ))}
               </ul>
             </div>
           </div>
 
-          {/* Back to Top 3D Button */}
-          <div className="lg:col-span-3 flex justify-end items-end">
+          {/* 3D Action Back to Top */}
+          <div className="lg:col-span-2 flex lg:justify-end items-end">
             <motion.button 
               onClick={scrollToTop}
-              whileHover={{ y: -10, rotateX: 10 }}
-              className="w-20 h-20 bg-zinc-900 border border-zinc-800 flex items-center justify-center group shadow-2xl"
-              style={{ transformStyle: "preserve-3d" }}
+              whileHover={{ y: -8, backgroundColor: "#D08C63", borderColor: "#D08C63" }}
+              whileTap={{ scale: 0.95 }}
+              className="w-16 h-16 border border-zinc-800 flex items-center justify-center group transition-colors duration-300"
             >
-              <div className="group-hover:translate-z-10 transition-transform">
+              <div className="text-zinc-500 group-hover:text-[#0B0D10] group-hover:-translate-y-1 transition-all duration-300">
                 <Icons.ArrowUp />
               </div>
             </motion.button>
           </div>
         </div>
 
-        {/* Bottom Credits */}
-        <div className="mt-32 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[9px] text-zinc-600 font-bold tracking-widest uppercase">
+        {/* Lower Perimeter */}
+        <div className="mt-32 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-[8px] text-zinc-500 font-black tracking-[0.3em] uppercase">
             © 2026 HATIM IDRISSI — TOUS DROITS RÉSERVÉS
           </p>
-          <div className="flex gap-6 items-center">
-             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-             <p className="text-[9px] text-zinc-600 font-bold tracking-widest uppercase">DISPONIBLE POUR PROJETS</p>
+          <div className="flex gap-4 items-center px-4 py-2 bg-white/5 backdrop-blur-sm border border-white/10">
+             <div className="w-1.5 h-1.5 bg-[#D08C63] animate-pulse" />
+             <p className="text-[8px] text-white font-black tracking-[0.3em] uppercase">DISPONIBLE POUR PROJETS</p>
           </div>
         </div>
       </footer>
@@ -196,12 +223,12 @@ export default function AboutAndFooter() {
       <style jsx global>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-33.33%); }
         }
         .animate-marquee {
           display: flex;
           width: fit-content;
-          animation: marquee 40s linear infinite;
+          animation: marquee 35s linear infinite;
         }
       `}</style>
     </div>
