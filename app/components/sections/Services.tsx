@@ -1,36 +1,87 @@
 "use client";
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from "framer-motion";
+
+const PaintExplosion = ({ color, isInView }: { color: string; isInView: boolean }) => {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+      
+      {/* 1. THE MAIN SPLAT (High-velocity impact) */}
+      <motion.svg
+        viewBox="0 0 200 200"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={isInView ? { scale: 3.5, opacity: 0.8 } : {}}
+        transition={{ 
+          type: "spring", 
+          stiffness: 250, 
+          damping: 15,
+          delay: 0.1 
+        }}
+        className="w-[100%] h-[100%]"
+        fill={color}
+      >
+        {/* Irregular, jagged splatter path - no smooth curves */}
+        <path d="M100,30 L110,60 L140,40 L130,80 L170,75 L145,100 L185,130 L140,135 L150,175 L110,150 L100,190 L90,150 L50,175 L60,135 L15,130 L55,100 L30,75 L70,80 L60,40 L90,60 Z" />
+        {/* Extra "messy" drips around the center */}
+        <circle cx="120" cy="50" r="4" />
+        <circle cx="160" cy="110" r="6" />
+        <circle cx="80" cy="160" r="3" />
+        <circle cx="40" cy="90" r="5" />
+      </motion.svg>
+
+      {/* 2. FLYING DROPLETS (The "Mist" of the impact) */}
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ scale: 0, x: 0, y: 0 }}
+          animate={isInView ? { 
+            scale: [0, 1.2, 0],
+            x: (Math.random() - 0.5) * 500, 
+            y: (Math.random() - 0.5) * 500 + 50, // Added +50 for a "falling" effect
+            opacity: [0, 1, 0]
+          } : {}}
+          transition={{ 
+            duration: 0.6, 
+            delay: 0.15 + (Math.random() * 0.2),
+            ease: "easeOut" 
+          }}
+          className="absolute w-3 h-3 rotate-45"
+          style={{ backgroundColor: color, clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} // Diamond shape looks like a drip
+        />
+      ))}
+    </div>
+  );
+};
 
 const services = [
   { 
     title: "Architecture Intérieure", 
     subtitle: "Coaching & Décoration", 
-    // High-end minimalist living room
     img: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2000",
-    id: "01"
+    id: "01",
+    splashColor: "#FF8C00", 
   },
   { 
     title: "Design Aquatique", 
     subtitle: "Murs d'eau & Aquariums", 
-    // Luxury minimalist pool/water architectural element
     img: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2000",
-    id: "02"
+    id: "02",
+    splashColor: "#0096FF",
   },
   { 
     title: "Design Végétal", 
     subtitle: "Paysagiste & Végétal Stabilisé", 
-    // Architectural interior with integrated greenery/tree
     img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2000",
-    id: "03"
+    id: "03",
+    splashColor: "#7AC142",
   },
   { 
     title: "Formation", 
     subtitle: "Transmission du Savoir-faire", 
-    // Clean, modern design studio atmosphere
     img: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000",
-    id: "04"
+    id: "04",
+    splashColor: "#D1D1D1", 
   },
 ];
 
@@ -45,8 +96,6 @@ export default function Services() {
 
   return (
     <section ref={containerRef} className="py-40 px-6 md:px-12 lg:px-24 bg-[#FDFDFD] relative overflow-hidden">
-      
-      {/* BACKGROUND TEXT */}
       <motion.div 
         style={{ x: bgTextX }}
         className="absolute top-1/2 left-0 -translate-y-1/2 text-[20vw] font-black text-zinc-100/70 select-none pointer-events-none whitespace-nowrap z-0 italic"
@@ -58,7 +107,7 @@ export default function Services() {
         <div className="mb-32">
           <span className="text-[10px] font-black tracking-[1em] text-green-800 uppercase mb-4 block">Collection</span>
           <h2 className="text-7xl md:text-[10rem] font-black uppercase tracking-tighter text-zinc-900 italic leading-[0.75]">
-            Nos <span className="text-zinc-200">Essences</span>
+            Nos <span className="text-zinc-200">services</span>
           </h2>
         </div>
         
@@ -75,14 +124,14 @@ export default function Services() {
 function ServiceCard({ service, index }: { service: any; index: number }) {
   const cardRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
+  const isInView = useInView(cardRef, { once: false, amount: 0.4 });
   
   const { scrollYProgress } = useScroll({
     target: cardRef,
     offset: ["start end", "end start"]
   });
 
-  // INTENSE PARALLAX ENGINE
-  const imgTranslateY = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
+  const imgTranslateY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
   return (
     <motion.div 
@@ -91,70 +140,48 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
       onMouseLeave={() => setIsHovered(false)}
       className={`relative flex flex-col group ${index % 2 !== 0 ? 'md:mt-32' : ''}`}
     >
-      {/* IMAGE CONTAINER */}
-      <div className="relative h-[600px] md:h-[750px] w-full bg-zinc-200 overflow-hidden shadow-2xl transition-all duration-700">
-        
-        {/* PARALLAX ELEMENT */}
-        <motion.div 
-           style={{ y: imgTranslateY }} 
-           className="absolute -top-[20%] left-0 w-full h-[140%] "
-        >
+      <PaintExplosion color={service.splashColor} isInView={isInView} />
+
+      <div className="relative h-[600px] md:h-[750px] w-full bg-zinc-200 overflow-hidden shadow-2xl">
+        <motion.div style={{ y: imgTranslateY }} className="absolute -top-[10%] left-0 w-full h-[120%]">
           <Image 
             src={service.img} 
             alt={service.title} 
             fill
             unoptimized
-            priority={index < 2}
-            className="object-cover"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </motion.div>
 
-        {/* --- LIQUID GLASS HOVER (Matches Hero) --- */}
         <AnimatePresence>
           {isHovered && (
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "circOut" }}
-              className="absolute inset-0 z-20 flex items-center justify-center"
+              className="absolute inset-0 z-20 flex items-center justify-center bg-white/10 backdrop-blur-md"
             >
-              {/* The Glass Pane */}
-              <div className="absolute inset-0 bg-white/10 backdrop-blur-md shadow-[inset_0_0_100px_rgba(255,255,255,0.2)]" />
-              
-              {/* Text Reveal */}
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-                className="relative z-30 text-center"
-              >
-                 <span className="text-white text-[10px] tracking-[0.6em] font-black uppercase mb-2 block">Explorer</span>
-                 <p className="text-white/60 font-mono text-[8px] tracking-[0.4em] uppercase">HI_PROJECT // {service.id}</p>
-              </motion.div>
+              <div className="text-center text-white">
+                 <span className="text-[10px] tracking-[0.6em] font-black uppercase mb-2 block">Explorer</span>
+                 <p className="font-mono text-[8px] tracking-[0.4em] uppercase">HI_PROJECT // {service.id}</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* THICK ARCHITECTURAL FRAME */}
         <div className="absolute inset-0 border-[20px] border-[#FDFDFD] z-30 pointer-events-none" />
       </div>
 
-      {/* TYPOGRAPHY */}
-      <div className="mt-12 group-hover:translate-x-6 transition-transform duration-1000 ease-[0.16,1,0.3,1]">
+      <div className="mt-12 group-hover:translate-x-4 transition-transform duration-700">
         <div className="flex items-center gap-6 mb-4">
-          <span className="text-green-800 text-[11px] font-black uppercase tracking-widest">{service.subtitle}</span>
-          <div className="h-[1px] flex-grow bg-zinc-200 transition-all duration-700 group-hover:bg-green-800/30" />
+          <span className="text-[11px] font-black uppercase tracking-widest" style={{ color: service.splashColor }}>
+            {service.subtitle}
+          </span>
+          <div className="h-[1px] flex-grow bg-zinc-200" />
         </div>
-        
         <h3 className="text-zinc-900 text-5xl md:text-8xl font-black uppercase tracking-tighter italic leading-[0.8]">
           {service.title}
         </h3>
-      </div>
-
-      {/* GHOST NUMBER */}
-      <div className="absolute -top-16 -left-10 text-[18rem] font-black text-zinc-100 select-none -z-10 group-hover:text-green-800/5 transition-colors duration-1000">
-        {service.id}
       </div>
     </motion.div>
   );

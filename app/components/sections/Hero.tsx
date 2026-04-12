@@ -54,7 +54,7 @@ export default function Hero() {
   return (
     <section className="relative h-[calc(100vh-100px)] mt-[100px] flex flex-col justify-center px-20 md:px-12 overflow-hidden bg-[#FDFDFD]">
       
-      {/* 1. BACKGROUND WATERMARK */}
+      {/* 1. BACKGROUND WATERMARK - Reverted to Subtle Dark */}
       <motion.div style={{ y: y1 }} className="absolute -left-10 top-0 pointer-events-none select-none opacity-[0.02] z-0">
         <h2 className="text-[55vw] font-black leading-none text-zinc-900">H</h2>
       </motion.div>
@@ -62,10 +62,10 @@ export default function Hero() {
         <h2 className="text-[55vw] font-black leading-none text-zinc-900">I</h2>
       </motion.div>
 
-      {/* 2. PERSISTENT SOCIAL DOCK (Far Right) */}
+      {/* 2. PERSISTENT SOCIAL DOCK */}
       <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-8 z-30">
-        <span className="text-[8px] font-black tracking-[0.5em] text-zinc-300 rotate-90 mb-4 select-none">CONNECT</span>
-        <div className="w-[1px] h-16 bg-zinc-200/50 mb-2" />
+        <span className="text-[8px] font-black tracking-[0.5em] text-zinc-300 rotate-90 mb-4 select-none uppercase">Connect</span>
+        <div className="w-[1px] h-16 bg-zinc-200 mb-2" />
         <div className="flex flex-col gap-6">
           {dockSocials.map((social, index) => (
             <motion.a 
@@ -77,7 +77,7 @@ export default function Hero() {
             </motion.a>
           ))}
         </div>
-        <div className="w-[1px] h-16 bg-zinc-200/50 mt-2" />
+        <div className="w-[1px] h-16 bg-zinc-200 mt-2" />
       </div>
 
       {/* 3. COORDINATES */}
@@ -89,16 +89,18 @@ export default function Hero() {
       {/* 4. MAIN LAYOUT */}
       <div className="w-full max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 items-end relative z-10">
         
-        {/* LEFT IMAGE ACCENT */}
+        {/* LEFT IMAGE ACCENT (Using local Image.png) */}
         <motion.div 
           initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1.8, ease: [0.19, 1, 0.22, 1] }}
-          className="hidden md:block md:col-span-5 lg:col-span-4 relative h-[70vh] w-full group"
+          className="hidden md:block md:col-span-5 lg:col-span-4 relative h-[70vh] w-150 group"
         >
           <div className="w-full h-full pro-clip-path overflow-hidden light-sweep shadow-2xl bg-zinc-100">
             <Image 
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200" 
-              alt="Architecture" fill className="object-cover transition-transform duration-[8s] group-hover:scale-110"
+              src="/Image.png" 
+              alt="Hatim Idrissi Architecture" 
+              fill 
+              className="object-cover transition-transform duration-[8s] group-hover:scale-110"
             />
             <div className="absolute inset-0 border border-white/20 pro-clip-path z-30 pointer-events-none group-hover:border-green-500/40 transition-colors duration-700" />
           </div>
@@ -107,12 +109,13 @@ export default function Hero() {
         {/* RIGHT AREA: ICONS + VIDEO */}
         <div className="md:col-span-7 lg:col-span-8 flex flex-col gap-6">
           
-          {/* TOP PLATFORM BAR (Normal Hover, Exact Colors) */}
+          {/* TOP PLATFORM BAR + EXPRESSION */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-8 mb-2 px-2"
+            className="flex items-center -my-2 gap-8 mt-7 px-20"
           >
-            <div className="flex items-center gap-8">
+            {/* The Icons */}
+            <div className="flex items-center gap-8 shrink-0">
               {topPlatforms.map((p, i) => (
                 <motion.a 
                   key={i} href={p.href}
@@ -121,21 +124,27 @@ export default function Hero() {
                     color: p.color,
                     filter: `drop-shadow(0 0 10px ${p.color}66)` 
                   }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="text-zinc-400 transition-colors duration-300"
                 >
                   {p.icon}
                 </motion.a>
               ))}
             </div>
-            <div className="flex-grow h-[1px] bg-gradient-to-r from-zinc-200 to-transparent" />
+            
+            {/* The Connecting Line & Expression */}
+            <div className="flex-grow flex items-center gap-6 overflow-hidden">
+              <div className="flex-grow h-[1px] bg-zinc-200" />
+              <span className="text-[12px] tracking-[0.2em] font-semibold text-zinc-400 uppercase italic whitespace-nowrap">
+                "Un jour je suis né depuis j'improvise."
+              </span>
+            </div>
           </motion.div>
 
-          {/* VIDEO PORTAL (Hover mirrored from image) */}
+          {/* VIDEO PORTAL */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.8, delay: 0.2, ease: [0.19, 1, 0.22, 1] }}
-            className="relative h-[55vh] md:h-[60vh] w-full group cursor-pointer"
+            className="relative h-[55vh] left-20 md:h-155 w-270 group cursor-pointer"
             onClick={() => setIsVideoOpen(true)}
           >
             <div className="w-full h-full pro-clip-path overflow-hidden light-sweep shadow-2xl bg-zinc-950">
@@ -145,7 +154,6 @@ export default function Hero() {
                 className="object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-110 transition-all duration-[2000ms]"
               />
               
-              {/* LED Border transition like image */}
               <div className="absolute inset-0 border border-white/10 pro-clip-path z-30 pointer-events-none group-hover:border-green-500/50 transition-colors duration-700" />
               
               <div className="absolute inset-0 flex items-center justify-center">
@@ -154,7 +162,6 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Sliding Glass Label */}
               <div className="absolute bottom-10 left-10 p-5 rounded-sm border border-white/10 bg-white/5 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-4 group-hover:translate-y-0 shadow-2xl">
                  <span className="text-[10px] text-white uppercase tracking-[0.5em] font-black">Experience Film</span>
               </div>

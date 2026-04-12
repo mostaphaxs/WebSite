@@ -1,6 +1,6 @@
 "use client";
-import React, { useRef } from "react";
-import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring, Variants } from "motion/react";
+import React, { useRef, useState } from "react";
+import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring, Variants, AnimatePresence } from "motion/react";
 import Image from "next/image";
 
 export default function Philosophy() {
@@ -43,6 +43,13 @@ export default function Philosophy() {
     y.set(mouseY / rect.height - 0.5);
   };
 
+  // --- CAROUSEL LOGIC ---
+  const images = ["/Scroll/1.png", "/Scroll/2.png", "/Scroll/3.png", "/Scroll/4.png", "/Scroll/5.png", "/Scroll/6.png", "/Scroll/7.png", "/Scroll/8.png", "/Scroll/9.png"];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  const prevSlide = () => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+
   return (
     <section ref={containerRef} className="pt-32 pb-32 bg-[#FDFDFD] relative overflow-hidden px-6 md:px-12 lg:px-24">
       
@@ -71,33 +78,78 @@ export default function Philosophy() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           
-         {/* 3. OPTIMIZED IMAGE BLOCK */}
-<div className="lg:col-span-5 order-2 lg:order-1 relative">
-  <motion.div style={{ y: imgY }} className="relative aspect-[3/4] overflow-hidden shadow-2xl bg-zinc-100">
-    <Image 
-      // This is a high-end, minimalist white kitchen (Architectural standard)
-      src="https://images.unsplash.com/photo-1556912173-3bb406ef7e77?q=80&w=1200" 
-      alt="Minimal Architectural Kitchen" 
-      fill 
-      priority
-      unoptimized={true} // Bypasses potential Next.js image optimization errors
-      className="object-cover transition-all duration-1000 scale-105"
-    />
-    {/* Glass frame overlay */}
-    <div className="absolute inset-0 border-[12px] border-[#FDFDFD] z-20" />
-  </motion.div>
-  
-  {/* Small Floating Quote (Adds fullness) */}
-  <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ delay: 1 }}
-      className="absolute -bottom-10 -right-10 bg-white p-6 shadow-xl hidden lg:block max-w-[200px] z-30"
-  >
-      <p className="text-[10px] uppercase tracking-widest text-zinc-400 mb-2 font-bold">Structure</p>
-      <p className="text-xs font-medium text-zinc-900 leading-relaxed italic">"L'harmonie naît de la soustraction, pas de l'addition."</p>
-  </motion.div>
-</div>
+          {/* 3. OPTIMIZED IMAGE CAROUSEL BLOCK */}
+          <div className="lg:col-span-5 order-2 lg:order-1 relative group">
+            <motion.div style={{ y: imgY }} className="relative aspect-[3/4] overflow-hidden shadow-2xl bg-zinc-100">
+              
+              {/* Carousel Images */}
+              <AnimatePresence initial={false}>
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="absolute inset-0"
+                >
+                  <Image 
+                    src={images[currentIndex]} 
+                    alt={`Naturel Design Realization ${currentIndex + 1}`} 
+                    fill 
+                    priority={currentIndex === 0}
+                    className="object-cover transition-transform duration-[10s] scale-105 group-hover:scale-110"
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Glass frame overlay */}
+              <div className="absolute inset-0 border-[12px] border-[#FDFDFD] z-20 pointer-events-none" />
+
+              {/* Controls: Left Arrow */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/70 backdrop-blur-md text-zinc-800 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-30 hover:bg-white"
+                aria-label="Previous image"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+
+              {/* Controls: Right Arrow */}
+              <button
+                onClick={nextSlide}
+                className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/70 backdrop-blur-md text-zinc-800 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-30 hover:bg-white"
+                aria-label="Next image"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+
+              {/* Controls: Pagination Dots */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentIndex(i)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      i === currentIndex ? "w-4 bg-white shadow-md" : "w-2 bg-white/50 hover:bg-white/80"
+                    }`}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+            </motion.div>
+            
+            {/* Small Floating Quote (Adds fullness) */}
+            <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1 }}
+                className="absolute -bottom-10 -right-10 bg-white p-6 shadow-xl hidden lg:block max-w-[200px] z-40"
+            >
+                <p className="text-[10px] uppercase tracking-widest text-zinc-400 mb-2 font-bold">Structure</p>
+                <p className="text-xs font-medium text-zinc-900 leading-relaxed italic">"L'harmonie naît de la soustraction, pas de l'addition."</p>
+            </motion.div>
+          </div>
 
           {/* Text Content */}
           <div className="lg:col-span-7 order-1 lg:order-2 space-y-16 lg:pl-10">
@@ -109,8 +161,8 @@ export default function Philosophy() {
             </motion.div>
 
             <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants} className="grid grid-cols-1 md:grid-cols-2 gap-12 text-zinc-500 text-base leading-relaxed">
-              <p>Chez Naturel Design, nous comprenons que l'architecture intérieure joue un rôle central dans l'amélioration du quotidien.</p>
-              <p className="border-l border-zinc-200 pl-8 italic">Nous intervenons avec réactivité et précision pour transformer l'espace en une expérience sensorielle.</p>
+              <p>Chez Naturel Design, nous comprenons que l'architecture intérieure joue un rôle de plus en plus central dans l'amélioration de notre quotidien. Aujourd'hui, le design est perçu comme un élément essentiel par de nombreuses personnes. C'est pourquoi, en tant que spécialistes du domaine, nous pensons que le design reflète les pensées et le mode de vie de chacun. Notre équipe, consciente de ces évolutions, se dévoue à anticiper et satisfaire les attentes de nos clients.</p>
+              <p className="border-l border-zinc-200 pl-8 italic">Hatim Idrissi, fondateur et directeur de Naturel Design, veille personnellement à ce que chaque projet porte la marque de notre engagement en matière d'excellence et de satisfaction client. Forts de notre expérience, nous intervenons avec réactivité et précision, que ce soit dans le respect des délais ou dans l'optimisation des espaces. Notre mission est simple : donner vie aux attentes de nos clients en créant des réalisations à la fois fonctionnelles et esthétiques.</p>
             </motion.div>
 
             {/* SIGNATURE SECTION */}
