@@ -212,35 +212,38 @@ export default function Philosophy() {
                 onMouseLeave={() => { x.set(0); y.set(0); }}
               >
                 <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative">
+                  {/* Subtle Shadow Version */}
                   <motion.span
                     style={{ x: shadowX, y: shadowY, transform: 'translateZ(-20px)' }}
-                    className="absolute inset-0 text-6xl font-signature italic text-zinc-200 blur-[3px] opacity-0 group-hover:opacity-40 transition-opacity duration-700"
+                    className={`absolute inset-0 text-6xl md:text-7xl font-signature text-zinc-200 blur-[2px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 signature-draw ${isInView ? 'animate-signature' : ''}`}
                   >
                     Hatim Idrissi
                   </motion.span>
 
-                  <span className="text-6xl md:text-7xl font-signature text-zinc-900 italic relative z-10 block">
+                  {/* Main Realistic Signature */}
+                  <span className={`text-6xl md:text-8xl font-signature text-zinc-900 relative z-10 block signature-draw ${isInView ? 'animate-signature' : ''}`}>
                     Hatim Idrissi
                   </span>
                 </motion.div>
 
+                {/* Optional underline/accent also draws */}
                 <div className="absolute bottom-6 left-6 w-full pointer-events-none">
-                  <svg width="240" height="40" viewBox="0 0 240 40" fill="none">
+                  <svg width="320" height="40" viewBox="0 0 320 40" fill="none">
                     <motion.path
-                      d="M10 20C60 5 120 35 180 20C220 10 240 25 245 15"
-                      stroke="#15803d"
-                      strokeWidth="1.5"
+                      d="M10 20C80 5 160 35 240 20C280 10 310 25 315 15"
+                      stroke="#D08C63"
+                      strokeWidth="2"
                       strokeLinecap="round"
                       initial={{ pathLength: 0 }}
-                      whileInView={{ pathLength: 1 }}
-                      transition={{ duration: 2.5, ease: "easeInOut" }}
+                      animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
+                      transition={{ duration: 2, delay: 1, ease: "easeInOut" }}
                     />
                   </svg>
                 </div>
               </div>
 
               <span className="text-[10px] font-mono tracking-[0.6em] text-zinc-400 uppercase">
-                Directeur Artistique
+                Hatim Idrissi — Fondateur
               </span>
             </motion.div>
           </div>

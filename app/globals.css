@@ -81,4 +81,28 @@ body {
   .group:hover .light-sweep::after {
     left: 120%; /* Light sweeps across the image on hover */
   }
+
+  .font-signature {
+    font-family: var(--font-signature);
+  }
+
+  /* REALISTIC SIGNATURE DRAWING ANIMATION */
+  .signature-draw {
+    mask-image: linear-gradient(to right, black 50%, transparent 50%);
+    mask-size: 200% 100%;
+    mask-position: 100% 0;
+  }
+
+  .animate-signature {
+    animation: draw-signature 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+
+  @keyframes draw-signature {
+    from {
+      mask-position: 100% 0;
+    }
+    to {
+      mask-position: 0% 0;
+    }
+  }
 }
