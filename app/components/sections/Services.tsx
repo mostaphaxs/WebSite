@@ -142,9 +142,12 @@ export default function Services() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="mb-32">
-          <span className="text-[10px] font-black tracking-[1em] text-zinc-400 uppercase mb-4 block">Savoir-Faire</span>
-          <h2 className="text-7xl md:text-[10rem] font-black uppercase tracking-tighter text-zinc-900 italic leading-[0.75]">
-            Nos <span className="text-zinc-200">Services</span>
+          <span className="text-[10px] font-black tracking-[1em] text-zinc-400 uppercase mb-8 block">Savoir-Faire</span>
+          <h2 className="text-5xl md:text-8xl lg:text-[7rem] font-black uppercase tracking-tighter leading-[0.8] italic text-zinc-900 flex flex-col">
+            <span className="opacity-100">Nos</span>
+            <span className="text-zinc-200 ml-16 md:ml-32 lg:ml-[12rem] mt-2 group-hover:text-zinc-900 transition-colors duration-700">
+              Services
+            </span>
           </h2>
         </div>
 

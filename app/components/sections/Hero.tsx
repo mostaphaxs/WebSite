@@ -147,7 +147,7 @@ export default function Hero() {
 
             {/* MAIN TITLE */}
             <motion.div style={{ y: yText }}>
-              <h1 className="text-7xl md:text-[9.5rem] font-black uppercase tracking-tighter leading-[0.8] italic text-zinc-900 flex flex-col">
+              <h1 className="text-6xl md:text-8xl lg:text-[8rem] font-black uppercase tracking-tighter leading-[0.8] italic text-zinc-900 flex flex-col">
                 <motion.span
                   initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -159,7 +159,8 @@ export default function Hero() {
                   initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{ duration: 1.6, ease: [0.19, 1, 0.22, 1], delay: 0.45 }}
-                  className="text-zinc-200 ml-20 md:ml-64 lg:ml-[28rem] mt-2 md:mt-8"
+                  // Adjusted margin to start "Idrissi" right under the "i" in "Hatim"
+                  className="text-zinc-200 ml-[5rem] md:ml-[10rem] lg:ml-[14rem] mt-2 md:mt-8"
                 >
                   Idrissi
                 </motion.span>
@@ -168,7 +169,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.4, ease: [0.19, 1, 0.22, 1], delay: 0.7 }}
-                className="mt-8 max-w-lg text-zinc-400 font-medium tracking-wide uppercase text-[10px] leading-relaxed"
+                className="mt-8 max-w-lg text-zinc-900 font-medium tracking-wide uppercase text-[12px] md:text-[14px] leading-relaxed"
               >
                 "Un jour je suis né depuis j'improvise." — Hatim Idrissi conçoit des paysages qui respirent et des architectures qui s'évadent.
               </motion.p>

@@ -101,14 +101,17 @@ export default function Philosophy() {
       <div className="absolute top-0 right-[15%] w-[1px] h-full bg-zinc-100/50 hidden lg:block" />
 
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="flex flex-col items-start mb-20 gap-4">
-          <motion.h2
-            initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants}
-            className="text-5xl md:text-8xl font-black text-zinc-900 leading-[0.8] tracking-tighter uppercase italic"
-          >
-            NOTRE <br />
-            <span className="text-zinc-900">PHILOSOPHIE</span>
-          </motion.h2>
+        <div className="flex flex-col gap-24 relative z-10 mb-20">
+          {/* --- UNIFIED SECTION HEADER --- */}
+          <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants}>
+            <h2 className="text-5xl md:text-8xl lg:text-[7rem] font-black uppercase tracking-tighter leading-[0.8] italic text-zinc-900 flex flex-col">
+              <span className="opacity-100">Notre</span>
+              <span className="text-zinc-200 ml-16 md:ml-32 lg:ml-[12rem] mt-2 group-hover:text-zinc-900 transition-colors duration-700">
+                Philosophie
+              </span>
+            </h2>
+            <div className="w-32 h-[2px] bg-zinc-900/20 mt-12" />
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
@@ -194,7 +197,7 @@ export default function Philosophy() {
               <div className="w-32 h-[2px] bg-green-800/20" />
             </motion.div>
 
-            <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants} className="grid grid-cols-1 md:grid-cols-2 gap-12 text-zinc-500 text-base leading-relaxed">
+            <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants} className="grid grid-cols-1 md:grid-cols-2 gap-12 text-zinc-900 text-base leading-relaxed">
               <p>Chez Naturel Design, nous comprenons que l'architecture intérieure joue un rôle de plus en plus central dans l'amélioration de notre quotidien. Aujourd'hui, le design est perçu comme un élément essentiel par de nombreuses personnes. C'est pourquoi, en tant que spécialistes du domaine, nous pensons que le design reflète les pensées et le mode de vie de chacun. Notre équipe, consciente de ces évolutions, se dévoue à anticiper et satisfaire les attentes de nos clients.</p>
               <p className="border-l border-zinc-200 pl-8 italic">Hatim Idrissi, fondateur et directeur de Naturel Design, veille personnellement à ce que chaque projet porte la marque de notre engagement en matière d'excellence et de satisfaction client. Forts de notre expérience, nous intervenons avec réactivité et précision, que ce soit dans le respect des délais ou dans l'optimisation des espaces. Notre mission est simple : donner vie aux attentes de nos clients en créant des réalisations à la fois fonctionnelles et esthétiques.</p>
             </motion.div>
