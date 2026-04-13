@@ -12,14 +12,15 @@ export default function Navbar() {
   const navBg = useTransform(scrollY, [0, 50], ["rgba(255, 255, 255, 0)", "rgba(11, 13, 16, 0.98)"]);
   const activeTextColor = useTransform(scrollY, [0, 50], ["#0B0D10", "#FFFFFF"]);
   const pillBg = useTransform(scrollY, [0, 50], ["rgba(0,0,0,0.05)", "rgba(255,255,255,0.1)"]);
-  
+
   const btnBg = useTransform(scrollY, [0, 50], ["#0B0D10", "#FFFFFF"]);
   const btnText = useTransform(scrollY, [0, 50], ["#FFFFFF", "#0B0D10"]);
 
   // 3D Physics for Logo
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const isHoveringLogo = useMotionValue(0); 
+  const isHoveringLogo = useMotionValue(0);
+  const logoScrollY = useTransform(scrollY, [0, 50], [0, -15]); // Shift the massive logo up when shrinking navbar
 
   const mouseXSpring = useSpring(x, { stiffness: 200, damping: 25 });
   const mouseYSpring = useSpring(y, { stiffness: 200, damping: 25 });
@@ -37,35 +38,35 @@ export default function Navbar() {
   ];
 
   return (
-    <motion.nav 
+    <motion.nav
       className="fixed top-0 left-0 w-full z-[100] px-6 md:px-12 flex justify-between items-center transition-all duration-300"
-      style={{ 
-        height: useTransform(scrollY, [0, 50], ["90px", "70px"]), 
+      style={{
+        height: useTransform(scrollY, [0, 50], ["90px", "70px"]),
         backgroundColor: navBg,
       }}
     >
       {/* --- REFINED PREMIUM SCROLL LOCATOR --- */}
-      <motion.div 
+      <motion.div
         className="absolute bottom-0 left-0 right-0 h-[4px] origin-left z-[110]"
-        style={{ 
-          scaleX, 
+        style={{
+          scaleX,
           // Copper Gradient Shimmer
           background: "linear-gradient(90deg, #D08C63 0%, #FFFFFF 50%, #D08C63 100%)",
           backgroundSize: "200% 100%",
           boxShadow: "0px 2px 10px rgba(208, 140, 99, 0.3)"
         }}
-        animate={{ 
-          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] 
+        animate={{
+          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
         }}
-        transition={{ 
-          duration: 3, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
         }}
       />
 
       {/* --- LOGO HUB --- */}
-      <motion.div 
+      <motion.div
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           x.set((e.clientX - rect.left) / rect.width - 0.5);
@@ -73,10 +74,10 @@ export default function Navbar() {
           isHoveringLogo.set(1);
         }}
         onMouseLeave={() => { x.set(0); y.set(0); isHoveringLogo.set(0); }}
-        style={{ rotateX, rotateY, scale, transformStyle: "preserve-3d" }}
+        style={{ rotateX, rotateY, scale, y: logoScrollY, transformStyle: "preserve-3d" }}
         className="relative cursor-pointer perspective-[1200px] flex items-center h-full origin-center"
       >
-        <div className="relative w-[200px] h-[50px] md:w-[280px] md:h-[60px]" style={{ transform: "translateZ(40px)" }}>
+        <div className="relative w-[260px] h-[70px] md:w-[380px] md:h-[100px]" style={{ transform: "translateZ(40px)" }}>
           <Image src="/LogoMe.svg" alt="Logo" fill className="object-contain" priority />
         </div>
       </motion.div>
@@ -84,7 +85,7 @@ export default function Navbar() {
       {/* --- NAV LINKS --- */}
       <div className="hidden lg:flex items-center gap-1 relative">
         {navLinks.map((link, index) => (
-          <motion.a 
+          <motion.a
             key={link.name}
             href={link.href}
             onMouseEnter={() => setHoveredIndex(index)}
@@ -103,7 +104,7 @@ export default function Navbar() {
                 />
               )}
             </AnimatePresence>
-            <motion.span 
+            <motion.span
               style={{ color: activeTextColor }}
               className="relative z-10 text-[9px] font-bold uppercase tracking-[0.4em] block"
             >
@@ -112,7 +113,7 @@ export default function Navbar() {
           </motion.a>
         ))}
 
-        <motion.button 
+        <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           style={{ backgroundColor: btnBg, color: btnText }}
