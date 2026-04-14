@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 const architecturalColors = {
   terracotta: "#D08C63",
@@ -19,7 +19,7 @@ export default function PageReveal({ children }: { children: React.ReactNode }) 
     return () => clearTimeout(timer);
   }, []);
 
-  const drawVariants = {
+  const drawVariants: Variants = {
     hidden: { pathLength: 0, opacity: 0 },
     visible: (custom: { d: number, l: number }) => ({
       pathLength: 1,
