@@ -102,7 +102,7 @@ const PaintExplosion = ({ color, isInView }: { color: string; isInView: boolean 
 // Static service data — defined outside component to avoid recreation on every render
 const services = [
   {
-    title: "Architecture Intérieure",
+    title: "Architecture D'intérieure",
     subtitle: "Coaching & Décoration",
     img: "/Image3.png",
     id: "01",
