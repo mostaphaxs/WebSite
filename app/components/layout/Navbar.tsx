@@ -9,12 +9,13 @@ export default function Navbar() {
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
   // Navigation Logic Colors
-  const navBg = useTransform(scrollY, [0, 50], ["rgba(255, 255, 255, 0)", "rgba(11, 13, 16, 0.98)"]);
-  const activeTextColor = useTransform(scrollY, [0, 50], ["#0B0D10", "#FFFFFF"]);
-  const pillBg = useTransform(scrollY, [0, 50], ["rgba(0,0,0,0.05)", "rgba(255,255,255,0.1)"]);
+  const navBg = useTransform(scrollY, [0, 50], ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.8)"]);
+  const activeTextColor = "#0B0D10"; // Keep text dark for white background
+  const pillBg = "rgba(0,0,0,0.05)";
+  const backdropBlur = useTransform(scrollY, [0, 50], ["blur(0px)", "blur(12px)"]);
 
-  const btnBg = useTransform(scrollY, [0, 50], ["#0B0D10", "#FFFFFF"]);
-  const btnText = useTransform(scrollY, [0, 50], ["#FFFFFF", "#0B0D10"]);
+  const btnBg = "#0B0D10";
+  const btnText = "#FFFFFF";
 
   // 3D Physics for Logo
   const x = useMotionValue(0);
@@ -39,10 +40,12 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      className="fixed top-0 left-0 w-full z-[100] px-6 md:px-12 flex justify-between items-center transition-all duration-300"
+      className="fixed top-0 left-0 w-full z-[100] px-6 md:px-12 flex justify-between items-center transition-all duration-300 border-b border-transparent"
       style={{
         height: useTransform(scrollY, [0, 50], ["90px", "70px"]),
         backgroundColor: navBg,
+        backdropFilter: backdropBlur,
+        borderColor: useTransform(scrollY, [0, 50], ["rgba(255,255,255,0)", "rgba(255,255,255,0.05)"]),
       }}
     >
       {/* --- REFINED PREMIUM SCROLL LOCATOR --- */}
@@ -114,12 +117,20 @@ export default function Navbar() {
         ))}
 
         <motion.button
-          whileHover={{ scale: 1.05 }}
+          whileHover={{
+            scale: 1.05,
+            backgroundColor: "#D08C63",
+            color: "#FFFFFF",
+            boxShadow: "0px 10px 20px rgba(208, 140, 99, 0.2)"
+          }}
           whileTap={{ scale: 0.95 }}
           style={{ backgroundColor: btnBg, color: btnText }}
-          className="relative ml-8 px-8 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.3em] transition-all shadow-xl"
+          className="relative ml-8 px-8 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.3em] transition-all shadow-xl overflow-hidden group"
         >
-          Contact
+          <span className="relative z-10">Contact</span>
+          <motion.div
+            className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"
+          />
         </motion.button>
       </div>
     </motion.nav>

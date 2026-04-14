@@ -132,7 +132,7 @@ export default function Services() {
   const bgTextX = useTransform(scrollYProgress, [0, 1], ["8%", "-15%"]);
 
   return (
-    <section ref={containerRef} className="py-40 px-6 md:px-12 lg:px-24 bg-[#FDFDFD] relative overflow-hidden">
+    <section ref={containerRef} className="py-40 px-6 md:px-12 lg:px-24 bg-white relative overflow-hidden">
       <motion.div
         style={{ x: bgTextX }}
         className="absolute top-1/2 left-0 -translate-y-1/2 text-[20vw] font-black text-zinc-100/70 select-none pointer-events-none whitespace-nowrap z-0 italic uppercase"
@@ -145,7 +145,7 @@ export default function Services() {
           <span className="text-[10px] font-black tracking-[1em] text-zinc-400 uppercase mb-8 block">Savoir-Faire</span>
           <h2 className="text-5xl md:text-8xl lg:text-[7rem] font-black uppercase tracking-tighter leading-[0.8] italic text-zinc-900 flex flex-col">
             <span className="opacity-100">Nos</span>
-            <span className="text-zinc-200 ml-16 md:ml-32 lg:ml-[12rem] mt-2 group-hover:text-zinc-900 transition-colors duration-700">
+            <span className="text-zinc-200 block sm:inline-block sm:ml-[10vw] lg:ml-[12vw] mt-2 group-hover:text-zinc-900 transition-colors duration-700">
               Services
             </span>
           </h2>
@@ -179,7 +179,7 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
     >
       <PaintExplosion color={service.splashColor} isInView={isInView} />
 
-      <div className="relative h-[600px] md:h-[750px] w-full bg-zinc-200 overflow-hidden shadow-2xl">
+      <div className="relative h-[600px] md:h-[750px] w-full bg-zinc-200 overflow-hidden shadow-2xl glass-morphism border border-white/10">
         <motion.div style={{ y: imgTranslateY }} className="absolute -top-[10%] left-0 w-full h-[120%]">
           <Image
             src={service.img}

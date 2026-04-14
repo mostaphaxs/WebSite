@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 
 /** ICONS - Pure SVG for maximum performance */
 const Icons = {
@@ -29,6 +29,24 @@ export default function Hero() {
   const y1 = useTransform(scrollY, [0, 500], [0, -100]);
   const yText = useTransform(scrollY, [0, 500], [0, 60]);
 
+  // Mouse interactivity for splashes
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { stiffness: 100, damping: 30 };
+  const mouseXSpring = useSpring(mouseX, springConfig);
+  const mouseYSpring = useSpring(mouseY, springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { clientX, clientY } = e;
+    const { innerWidth, innerHeight } = window;
+    mouseX.set((clientX / innerWidth) - 0.5);
+    mouseY.set((clientY / innerHeight) - 0.5);
+  };
+
+  const moveX = useTransform(mouseXSpring, [-0.5, 0.5], [-30, 30]);
+  const moveY = useTransform(mouseYSpring, [-0.5, 0.5], [-30, 30]);
+
   const socials = [
     { icon: <Icons.Instagram />, color: "#E4405F", href: "#" },
     { icon: <Icons.Linkedin />, color: "#0077B5", href: "#" },
@@ -38,7 +56,10 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center bg-[#FDFDFD] overflow-hidden pt-20">
+    <section
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen flex flex-col justify-center bg-white overflow-hidden pt-20"
+    >
 
       {/* 1. BACKGROUND WATERMARK AND STATIC COLOR SPLASH */}
       <motion.div style={{ y: y1 }} className="absolute inset-0 pointer-events-none select-none flex items-center justify-center opacity-[0.03] z-0">
@@ -62,7 +83,7 @@ export default function Hero() {
           animate={{ opacity: 1, scale: 1.25 }}
           transition={{ duration: 2.5, ease: "easeOut" }}
           className="absolute inset-0 block"
-          style={{ filter: "url(#hero-goo)" }}
+          style={{ filter: "url(#hero-goo)", x: moveX, y: moveY }}
         >
           {/* Terracotta Splat */}
           <div className="absolute top-[10%] left-[10%] w-72 h-72 bg-[#D08C63] rounded-[45%_55%_40%_60%/55%_45%_60%_40%]" />
@@ -159,8 +180,8 @@ export default function Hero() {
                   initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{ duration: 1.6, ease: [0.19, 1, 0.22, 1], delay: 0.45 }}
-                  // Adjusted margin to start "Idrissi" right under the "i" in "Hatim"
-                  className="text-zinc-200 ml-[5rem] md:ml-[10rem] lg:ml-[14rem] mt-2 md:mt-8"
+                  // Improved responsive alignment: use % or container-based logic
+                  className="text-zinc-200 block sm:inline-block sm:ml-[10vw] lg:ml-[12vw] mt-2 md:mt-4 lg:mt-6"
                 >
                   Idrissi
                 </motion.span>

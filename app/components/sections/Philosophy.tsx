@@ -51,7 +51,7 @@ export default function Philosophy() {
   const prevSlide = () => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
 
   return (
-    <section ref={containerRef} className="pt-32 pb-32 bg-[#FDFDFD] relative overflow-hidden px-6 md:px-12 lg:px-24">
+    <section ref={containerRef} className="pt-32 pb-32 bg-white relative overflow-hidden px-6 md:px-12 lg:px-24">
 
       {/* Static Gooey Color Splashes representing the 4 Service Colors */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden mix-blend-multiply opacity-50">
@@ -106,7 +106,7 @@ export default function Philosophy() {
           <motion.div initial="hidden" animate={isInView ? "visible" : "hidden"} variants={nameVariants}>
             <h2 className="text-5xl md:text-8xl lg:text-[7rem] font-black uppercase tracking-tighter leading-[0.8] italic text-zinc-900 flex flex-col">
               <span className="opacity-100">Notre</span>
-              <span className="text-zinc-200 ml-16 md:ml-32 lg:ml-[12rem] mt-2 group-hover:text-zinc-900 transition-colors duration-700">
+              <span className="text-zinc-200 block sm:inline-block sm:ml-[10vw] lg:ml-[12vw] mt-2 group-hover:text-zinc-900 transition-colors duration-700">
                 Philosophie
               </span>
             </h2>
@@ -124,10 +124,10 @@ export default function Philosophy() {
               <AnimatePresence initial={false}>
                 <motion.div
                   key={currentIndex}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  initial={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+                  transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
                   className="absolute inset-0"
                 >
                   <Image
