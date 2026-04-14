@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 
@@ -22,6 +22,15 @@ const Icons = {
   ),
 };
 
+// Static data — defined outside component to avoid recreation on every render
+const socials = [
+  { icon: <Icons.Instagram />, color: "#E4405F", href: "#" },
+  { icon: <Icons.Linkedin />, color: "#0077B5", href: "#" },
+  { icon: <Icons.Youtube />, color: "#FF0000", href: "#" },
+  { icon: <Icons.Facebook />, color: "#1877F2", href: "#" },
+  { icon: <Icons.Houzz />, color: "#7AC142", href: "#" },
+];
+
 export default function Hero() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const { scrollY } = useScroll();
@@ -37,23 +46,15 @@ export default function Hero() {
   const mouseXSpring = useSpring(mouseX, springConfig);
   const mouseYSpring = useSpring(mouseY, springConfig);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
     mouseX.set((clientX / innerWidth) - 0.5);
     mouseY.set((clientY / innerHeight) - 0.5);
-  };
+  }, [mouseX, mouseY]);
 
   const moveX = useTransform(mouseXSpring, [-0.5, 0.5], [-30, 30]);
   const moveY = useTransform(mouseYSpring, [-0.5, 0.5], [-30, 30]);
-
-  const socials = [
-    { icon: <Icons.Instagram />, color: "#E4405F", href: "#" },
-    { icon: <Icons.Linkedin />, color: "#0077B5", href: "#" },
-    { icon: <Icons.Youtube />, color: "#FF0000", href: "#" },
-    { icon: <Icons.Facebook />, color: "#1877F2", href: "#" },
-    { icon: <Icons.Houzz />, color: "#7AC142", href: "#" },
-  ];
 
   return (
     <section
@@ -83,7 +84,7 @@ export default function Hero() {
           animate={{ opacity: 1, scale: 1.25 }}
           transition={{ duration: 2.5, ease: "easeOut" }}
           className="absolute inset-0 block"
-          style={{ filter: "url(#hero-goo)", x: moveX, y: moveY }}
+          style={{ filter: "url(#hero-goo)", x: moveX, y: moveY, willChange: "transform" }}
         >
           {/* Terracotta Splat */}
           <div className="absolute top-[10%] left-[10%] w-72 h-72 bg-[#D08C63] rounded-[45%_55%_40%_60%/55%_45%_60%_40%]" />
@@ -138,6 +139,7 @@ export default function Hero() {
               src="/Image.png"
               alt="Hatim Idrissi"
               fill
+              sizes="(max-width: 1024px) 0vw, 33vw"
               className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
             />
             {/* Gallery Frame Effect */}
@@ -180,7 +182,6 @@ export default function Hero() {
                   initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{ duration: 1.6, ease: [0.19, 1, 0.22, 1], delay: 0.45 }}
-                  // Improved responsive alignment: use % or container-based logic
                   className="text-zinc-200 block sm:inline-block sm:ml-[10vw] lg:ml-[12vw] mt-2 md:mt-4 lg:mt-6"
                 >
                   Idrissi
@@ -207,7 +208,10 @@ export default function Hero() {
           >
             <Image
               src="https://i.ytimg.com/vi/lWa5EAfRP34/maxresdefault.jpg"
-              alt="Project Film" fill priority
+              alt="Project Film"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 66vw"
               className="object-cover brightness-50 group-hover:brightness-90 transition-all duration-700 group-hover:scale-105"
             />
 
@@ -236,7 +240,15 @@ export default function Hero() {
             className="fixed inset-0 z-[500] bg-zinc-950/95 backdrop-blur-2xl flex items-center justify-center p-6"
           >
             <div className="w-full max-w-6xl aspect-video relative shadow-2xl">
-              <iframe width="100%" height="100%" src="https://www.youtube.com/embed/lWa5EAfRP34?autoplay=1" frameBorder="0" allowFullScreen />
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/lWa5EAfRP34?autoplay=1"
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                referrerPolicy="no-referrer"
+                allowFullScreen
+              />
               <button
                 onClick={() => setIsVideoOpen(false)}
                 className="absolute -top-12 right-0 text-white text-[10px] tracking-[0.4em] uppercase hover:text-zinc-400 transition-all"

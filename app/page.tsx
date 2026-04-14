@@ -12,25 +12,25 @@ export default function Home() {
   return (
     <main className="relative min-h-screen selection:bg-green-100">
       {/* LAYER 1: THE TEXTURE & GRID */}
-      <div className="fixed inset-0 z-0 bg-grid pointer-events-none" />
-      
+      <div className="fixed inset-0 z-0 bg-grid pointer-events-none" style={{ willChange: "transform" }} />
+
       {/* LAYER 2: THE ATMOSPHERIC LIGHTING */}
-      <div className="fixed inset-0 z-0 pro-bg-gradient pointer-events-none" />
+      <div className="fixed inset-0 z-0 pro-bg-gradient pointer-events-none" style={{ willChange: "transform" }} />
 
       {/* LAYER 3: THE CONTENT */}
       <div className="relative z-10">
         <Navbar />
-        
+
         <Hero />
-        
+
         {/* Subtle separator using a thin line */}
         <div className="px-16">
           <div className="h-[1px] w-full bg-zinc-200" />
         </div>
 
-        <Philosophy/>
+        <Philosophy />
         <Services />
-        <AboutAndFooter/>
+        <AboutAndFooter />
       </div>
     </main>
   );

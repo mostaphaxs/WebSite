@@ -1,7 +1,9 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 
+// Static data — defined outside component to prevent recreation on every render
 const reviews = [
   {
     name: "Sarah Lahlou",
@@ -110,8 +112,8 @@ export default function AboutAndFooter() {
 
                 <div className="flex justify-between items-end relative z-10">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-none overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 border border-white/10">
-                      <img src={review.img} alt={review.name} className="w-full h-full object-cover" />
+                    <div className="w-14 h-14 rounded-none overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 border border-white/10 relative">
+                      <Image src={review.img} alt={review.name} fill sizes="56px" className="object-cover" />
                     </div>
                     <div>
                       <h4 className="font-bold text-white uppercase tracking-widest text-[11px] mb-1">{review.name}</h4>

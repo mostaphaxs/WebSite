@@ -1,7 +1,10 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring, Variants, AnimatePresence } from "motion/react";
 import Image from "next/image";
+
+// Static data — defined outside component to avoid recreation on every render
+const images = ["/Scroll/1.png", "/Scroll/2.png", "/Scroll/3.png", "/Scroll/4.png", "/Scroll/5.png", "/Scroll/6.png", "/Scroll/7.png", "/Scroll/8.png", "/Scroll/9.png"];
 
 export default function Philosophy() {
   const containerRef = useRef(null);
@@ -35,20 +38,19 @@ export default function Philosophy() {
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     x.set(mouseX / rect.width - 0.5);
     y.set(mouseY / rect.height - 0.5);
-  };
+  }, [x, y]);
 
   // --- CAROUSEL LOGIC ---
-  const images = ["/Scroll/1.png", "/Scroll/2.png", "/Scroll/3.png", "/Scroll/4.png", "/Scroll/5.png", "/Scroll/6.png", "/Scroll/7.png", "/Scroll/8.png", "/Scroll/9.png"];
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = () => setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  const prevSlide = () => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const nextSlide = useCallback(() => setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1)), []);
+  const prevSlide = useCallback(() => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)), []);
 
   return (
     <section ref={containerRef} className="pt-32 pb-32 bg-white relative overflow-hidden px-6 md:px-12 lg:px-24">
@@ -135,6 +137,8 @@ export default function Philosophy() {
                     alt={`Naturel Design Realization ${currentIndex + 1}`}
                     fill
                     priority={currentIndex === 0}
+                    loading={currentIndex === 0 ? "eager" : "lazy"}
+                    sizes="(max-width: 1024px) 100vw, 42vw"
                     className="object-cover transition-transform duration-[10s] scale-105 group-hover:scale-110"
                   />
                 </motion.div>

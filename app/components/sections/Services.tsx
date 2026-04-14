@@ -1,20 +1,34 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "framer-motion";
 
 const PaintExplosion = ({ color, isInView }: { color: string; isInView: boolean }) => {
   const filterId = React.useId();
 
-  // Optimized Edge-Only Points: Specifically offset to the boundary to ensure 100% visibility.
-  // We avoid the center completely to maximize performance as requested.
+  // Pre-computed stable positions — avoids Math.random() in render which causes
+  // different values on every re-render (correctness + performance bug)
+  const dropletPositions = useMemo(() => {
+    const positions = [];
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2;
+      const dist = 380 + (((i * 73) % 150)); // deterministic pseudo-spread
+      positions.push({
+        x: Math.cos(angle) * dist,
+        y: Math.sin(angle) * dist,
+      });
+    }
+    return positions;
+  }, []);
+
+  // Fixed edge-only points
   const visiblePoints = [
-    { x: -52, y: -48 }, // Top Left Corner
-    { x: 52, y: -48 },  // Top Right Corner
-    { x: -52, y: 48 },  // Bottom Left Corner
-    { x: 52, y: 48 },   // Bottom Right Corner
-    { x: -52, y: 0 },   // Left Edge
-    { x: 52, y: 0 },    // Right Edge
+    { x: -52, y: -48 },
+    { x: 52, y: -48 },
+    { x: -52, y: 48 },
+    { x: 52, y: 48 },
+    { x: -52, y: 0 },
+    { x: 52, y: 0 },
   ];
 
   return (
@@ -55,44 +69,41 @@ const PaintExplosion = ({ color, isInView }: { color: string; isInView: boolean 
             className="absolute w-32 h-32 md:w-48 md:h-48"
             style={{
               backgroundColor: color,
-              borderRadius: '60% 40% 50% 50% / 40% 50% 50% 60%'
+              borderRadius: '60% 40% 50% 50% / 40% 50% 50% 60%',
+              willChange: 'transform',
             }}
           />
         ))}
 
         {/* Minimal perimeter droplets that stay in the visible gutter */}
-        {Array.from({ length: 12 }).map((_, i) => {
-          const angle = (i / 12) * Math.PI * 2;
-          const dist = 380 + Math.random() * 150;
-          return (
-            <motion.div
-              key={`drop-${i}`}
-              initial={{ scale: 0, x: 0, y: 0 }}
-              animate={isInView ? {
-                scale: [0, 1.5, 1],
-                x: Math.cos(angle) * dist,
-                y: Math.sin(angle) * dist
-              } : {}}
-              transition={{
-                duration: 2,
-                delay: 0.2 + (i * 0.05),
-                ease: "easeOut"
-              }}
-              className="absolute w-8 h-8 rounded-full"
-              style={{ backgroundColor: color }}
-            />
-          );
-        })}
+        {dropletPositions.map((pos, i) => (
+          <motion.div
+            key={`drop-${i}`}
+            initial={{ scale: 0, x: 0, y: 0 }}
+            animate={isInView ? {
+              scale: [0, 1.5, 1],
+              x: dropletPositions[i].x,
+              y: dropletPositions[i].y
+            } : {}}
+            transition={{
+              duration: 2,
+              delay: 0.2 + (i * 0.05),
+              ease: "easeOut"
+            }}
+            className="absolute w-8 h-8 rounded-full"
+            style={{ backgroundColor: color, willChange: 'transform' }}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
+// Static service data — defined outside component to avoid recreation on every render
 const services = [
   {
     title: "Architecture Intérieure",
     subtitle: "Coaching & Décoration",
-    // Structural, clean interior design
     img: "/Image3.png",
     id: "01",
     splashColor: "#D08C63",
@@ -100,22 +111,19 @@ const services = [
   {
     title: "Design Aquatique",
     subtitle: "Murs d'eau & Aquariums",
-    // SPECIFIC: High-end integrated wall aquarium
     img: "/image5.png",
     id: "02",
     splashColor: "#0096FF",
   }, {
     title: "Design Végétal",
     subtitle: "Paysagiste & Végétal Stabilisé",
-    // ULTRA-VIBRANT GREEN living wall
     img: "/image2.png",
     id: "03",
-    splashColor: "#22C55E", // Brighter green for the splash
+    splashColor: "#22C55E",
   },
   {
     title: "Formation",
     subtitle: "Transmission du Savoir-faire",
-    // Collaborative architectural workspace
     img: "/image4.png",
     id: "04",
     splashColor: "#A1A1A1",
@@ -185,6 +193,8 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
             src={service.img}
             alt={service.title}
             fill
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </motion.div>

@@ -54,6 +54,7 @@ export default function WhatsAppInteraction() {
                   animate={{ rotate: 360 }}
                   transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
                   className="w-full h-full bg-gradient-to-tr from-[#D08C63] via-[#0096FF] to-[#22C55E]"
+                  style={{ willChange: "transform" }}
                 />
               </div>
 
