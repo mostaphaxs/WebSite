@@ -66,10 +66,10 @@ export default function PageReveal({ children }: { children: React.ReactNode }) 
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-[0.4em] text-zinc-900 italic">
                 Hatim Idrissi
               </h1>
-              <div className="h-[2px] w-24 bg-terracotta mt-2" />
+              <div className="h-[2px] w-24 mt-2" style={{ backgroundColor: "#D08C63" }} />
               <div className="flex items-center gap-3 mt-2">
                 <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest leading-none">STUDIO D'ARCHITECTURE D'INTÉRIEUR</span>
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#22C55E" }} />
               </div>
             </motion.div>
 

@@ -106,7 +106,7 @@ const services = [
     subtitle: "Coaching & Décoration",
     img: "/Image3.png",
     id: "01",
-    splashColor: "Orange",
+    splashColor: "#D08C63",
   },
   {
     title: "Design Aquatique",
@@ -123,7 +123,7 @@ const services = [
   },
   {
     title: "Formation",
-    subtitle: "Transmission du Savoir-faire", 
+    subtitle: "Transmission du Savoir-faire",
     img: "/image4.png",
     id: "04",
     splashColor: "#bebcbcff",

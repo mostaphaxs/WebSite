@@ -21,16 +21,24 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
 
-        <Hero />
+        <section id="architecture">
+          <Hero />
+        </section>
 
         {/* Subtle separator using a thin line */}
         <div className="px-16">
           <div className="h-[1px] w-full bg-zinc-200" />
         </div>
 
-        <Philosophy />
-        <Services />
-        <AboutAndFooter />
+        <section id="vegetal">
+          <Philosophy />
+        </section>
+        <section id="design-aquatique">
+          <Services />
+        </section>
+        <section id="formation">
+          <AboutAndFooter />
+        </section>
       </div>
     </main>
   );
