@@ -53,7 +53,7 @@ export default function Philosophy() {
   const prevSlide = useCallback(() => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)), []);
 
   return (
-    <section ref={containerRef} className="pt-32 pb-32 bg-white relative overflow-hidden px-6 md:px-12 lg:px-24">
+    <section ref={containerRef} className="pt-32 pb-32 bg-transparent relative overflow-hidden px-6 md:px-12 lg:px-24">
 
       {/* Static Gooey Color Splashes representing the 4 Service Colors */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden mix-blend-multiply opacity-50">

@@ -59,7 +59,7 @@ export default function Hero() {
   return (
     <section
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen flex flex-col justify-center bg-white overflow-hidden pt-20"
+      className="relative min-h-screen flex flex-col justify-center bg-transparent overflow-hidden pt-20"
     >
 
       {/* 1. BACKGROUND WATERMARK AND STATIC COLOR SPLASH */}

@@ -1,9 +1,9 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
-// Static data — defined outside component to prevent recreation on every render
+// Static data
 const reviews = [
   {
     name: "Sarah Lahlou",
@@ -49,42 +49,54 @@ const Icons = {
   )
 };
 
-export default function AboutAndFooter() {
-  const containerRef = useRef(null);
+const AboutAndFooter = React.forwardRef<HTMLDivElement>((props, ref) => {
+  const innerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [carouselWidth, setCarouselWidth] = useState(0);
+  const [offsetTop, setOffsetTop] = useState(0);
+
+  // Sync forward ref and track offset
+  useImperativeHandle(ref, () => innerRef.current!);
 
   useEffect(() => {
-    if (carouselRef.current) {
-      setCarouselWidth(carouselRef.current.scrollWidth - carouselRef.current.offsetWidth);
-    }
+    const calc = () => {
+      if (carouselRef.current) {
+        setCarouselWidth(carouselRef.current.scrollWidth - carouselRef.current.offsetWidth);
+      }
+      if (innerRef.current) {
+        const rect = innerRef.current.getBoundingClientRect();
+        setOffsetTop(rect.top + window.pageYOffset);
+      }
+    };
+    calc();
+    window.addEventListener("resize", calc);
+    return () => window.removeEventListener("resize", calc);
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
+  // Use global scroll to avoid hydration issues with targets
+  const { scrollY } = useScroll();
 
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -250]);
-  const opacityParallax = useTransform(scrollYProgress, [0.5, 1], [0, 0.05]);
+  // Parallax logic based on global scroll position relative to our offset
+  const yParallax = useTransform(scrollY, [offsetTop - 1000, offsetTop + 500], [0, -250]);
+  const opacityParallax = useTransform(scrollY, [offsetTop - 200, offsetTop + 200], [0, 0.05]);
 
   const scrollToTop = () => { window.scrollTo({ top: 0, behavior: "smooth" }); };
 
   return (
-    <div ref={containerRef} className="bg-[#08121a] text-zinc-100 overflow-hidden selection:bg-[#D08C63] selection:text-white">
+    <div ref={innerRef} className="bg-transparent text-zinc-100 overflow-hidden selection:bg-[#D08C63] selection:text-white">
 
       {/* --- TESTIMONIALS SECTION --- */}
-      <section className="py-32 relative border-t border-white/5 bg-gradient-to-b from-[#08121a] to-[#0d1f2d]">
+      <section className="py-32 relative border-t border-white/5 bg-transparent">
         <div className="px-6 md:px-12 lg:px-24 mb-20 relative z-10 flex flex-col gap-6">
-          <p className="text-[9px] text-[#22C55E] font-black uppercase tracking-[0.4em]">Témoignages</p>
+          <p className="text-[9px] text-[#D08C63] font-black uppercase tracking-[0.4em]">Témoignages</p>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-            <h3 className="text-4xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#22C55E] to-[#0096FF] bg-clip-text text-transparent">
+            <h3 className="text-4xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#D08C63] to-[#8B4513] bg-clip-text text-transparent">
               L'EXPÉRIENCE <br />
               <span className="italic font-light tracking-normal opacity-40">NATUREL DESIGN</span>
             </h3>
             <div className="flex flex-col text-right">
               <span className="text-4xl font-light text-[#D08C63] italic">+149</span>
-              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#0096FF]/60">Projets Réalisés</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D08C63]/40">Projets Réalisés</span>
             </div>
           </div>
         </div>
@@ -100,7 +112,7 @@ export default function AboutAndFooter() {
             {reviews.map((review, i) => (
               <motion.div
                 key={i}
-                className="w-[320px] md:w-[500px] h-auto min-h-[300px] flex-shrink-0 bg-[#0d1f2d]/40 backdrop-blur-xl border border-[#0096FF]/10 p-10 flex flex-col justify-between group hover:border-[#22C55E]/40 transition-colors duration-500 relative overflow-hidden"
+                className="w-[320px] md:w-[500px] h-auto min-h-[300px] flex-shrink-0 bg-[#261b11]/30 backdrop-blur-xl border border-[#D08C63]/10 p-10 flex flex-col justify-between group hover:border-[#D08C63]/40 transition-colors duration-500 relative overflow-hidden"
               >
                 <div className="absolute top-8 right-8">
                   <Icons.Quote />
@@ -117,7 +129,7 @@ export default function AboutAndFooter() {
                     </div>
                     <div>
                       <h4 className="font-bold text-white uppercase tracking-widest text-[11px] mb-1">{review.name}</h4>
-                      <p className="text-[9px] text-[#22C55E]/60 font-bold tracking-[0.2em] uppercase">{review.role}</p>
+                      <p className="text-[10px] text-[#D08C63]/60 font-bold tracking-[0.2em] uppercase">{review.role}</p>
                     </div>
                   </div>
                   <div className="flex gap-[4px]">
@@ -126,7 +138,7 @@ export default function AboutAndFooter() {
                 </div>
 
                 {/* Accent Line */}
-                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-[#22C55E] to-[#0096FF] group-hover:w-full transition-all duration-1000 ease-out" />
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-[#D08C63] to-[#8B4513] group-hover:w-full transition-all duration-1000 ease-out" />
               </motion.div>
             ))}
           </motion.div>
@@ -134,13 +146,13 @@ export default function AboutAndFooter() {
       </section>
 
       {/* --- FOOTER SECTION --- */}
-      <footer className="bg-[#1a1408] pt-40 pb-12 px-6 md:px-12 lg:px-24 relative overflow-hidden flex flex-col justify-between border-t border-[#D08C63]/10">
+      <footer className="bg-transparent pt-40 pb-12 px-6 md:px-12 lg:px-24 relative overflow-hidden flex flex-col justify-between border-t border-[#D08C63]/20">
 
         {/* BRAND COLORED TOP DECORATIVE BAR */}
         <div className="absolute top-0 left-0 w-full h-[3px] flex">
-          <div className="flex-1 bg-[#D08C63]" /> {/* Golden/Copper */}
-          <div className="flex-1 bg-[#22C55E]" /> {/* Green */}
-          <div className="flex-1 bg-[#0096FF]" /> {/* Blue */}
+          <div className="flex-[3] bg-[#D08C63]" /> {/* Golden/Copper - Main */}
+          <div className="flex-1 bg-[#8B4513]" />   {/* Saddle Brown */}
+          <div className="flex-1 bg-[#5C4033]" />   {/* Deep Brown */}
         </div>
 
         {/* Parallax Watermark Name */}
@@ -158,7 +170,7 @@ export default function AboutAndFooter() {
               <span className="w-12 h-[1px] bg-[#D08C63]" /> Discutons de votre projet
             </p>
             <a href="mailto:contact@hatimidrissi.com" className="group block w-fit">
-              <h2 className="text-3xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-none transition-all duration-500 bg-gradient-to-r from-[#D08C63] via-[#22C55E] to-[#0096FF] bg-clip-text text-transparent group-hover:tracking-normal">
+              <h2 className="text-3xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-none transition-all duration-500 bg-gradient-to-r from-[#D08C63] via-[#8B4513] to-[#5C4033] bg-clip-text text-transparent group-hover:tracking-normal">
                 contact@<br />hatimidrissi.com
               </h2>
             </a>
@@ -174,8 +186,8 @@ export default function AboutAndFooter() {
               <ul className="flex flex-col gap-6">
                 {[
                   { name: 'Architecture Int.', color: '#D08C63' },
-                  { name: 'Design Aquatique', color: '#0096FF' },
-                  { name: 'Design Végétal', color: '#22C55E' },
+                  { name: 'Design Aquatique', color: '#8B4513' },
+                  { name: 'Design Végétal', color: '#5C4033' },
                   { name: 'Formation Pro', color: '#A1A1A1' }
                 ].map((item) => (
                   <li key={item.name} className="group flex items-center gap-4">
@@ -192,8 +204,8 @@ export default function AboutAndFooter() {
               <ul className="flex flex-col gap-6">
                 {[
                   { name: 'Instagram', color: '#D08C63' },
-                  { name: 'LinkedIn', color: '#0096FF' },
-                  { name: 'YouTube', color: '#22C55E' },
+                  { name: 'LinkedIn', color: '#8B4513' },
+                  { name: 'YouTube', color: '#5C4033' },
                   { name: 'Houzz', color: '#A1A1A1' }
                 ].map((item) => (
                   <li key={item.name} className="group flex items-center gap-4">
@@ -228,8 +240,8 @@ export default function AboutAndFooter() {
           <div className="flex gap-4 items-center px-4 py-2 bg-[#D08C63]/5 border border-[#D08C63]/10">
             <div className="flex gap-1.5">
               <div className="w-1.5 h-1.5 bg-[#D08C63] rounded-full" />
-              <div className="w-1.5 h-1.5 bg-[#0096FF] rounded-full" />
-              <div className="w-1.5 h-1.5 bg-[#22C55E] rounded-full animate-pulse shadow-[0_0_10px_#22C55E]" />
+              <div className="w-1.5 h-1.5 bg-[#8B4513] rounded-full" />
+              <div className="w-1.5 h-1.5 bg-[#5C4033] rounded-full animate-pulse shadow-[0_0_10px_#D08C63]" />
               <div className="w-1.5 h-1.5 bg-[#A1A1A1] rounded-full" />
             </div>
             <p className="text-[9px] text-[#D08C63]/80 font-black tracking-[0.3em] uppercase">Status: Online</p>
@@ -238,4 +250,6 @@ export default function AboutAndFooter() {
       </footer>
     </div>
   );
-}
+});
+
+export default AboutAndFooter;

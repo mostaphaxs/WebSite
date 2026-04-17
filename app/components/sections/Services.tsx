@@ -140,7 +140,7 @@ export default function Services() {
   const bgTextX = useTransform(scrollYProgress, [0, 1], ["8%", "-15%"]);
 
   return (
-    <section ref={containerRef} className="py-40 px-6 md:px-12 lg:px-24 bg-white relative overflow-hidden">
+    <section ref={containerRef} className="py-40 px-6 md:px-12 lg:px-24 bg-transparent relative overflow-hidden">
       <motion.div
         style={{ x: bgTextX }}
         className="absolute top-1/2 left-0 -translate-y-1/2 text-[20vw] font-black text-zinc-100/70 select-none pointer-events-none whitespace-nowrap z-0 italic uppercase"
