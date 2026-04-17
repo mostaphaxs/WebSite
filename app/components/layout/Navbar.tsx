@@ -17,7 +17,7 @@ export default function Navbar() {
   const { scrollY, scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
-  const navBg = useTransform(scrollY, [0, 50], ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.85)"]);
+  const navBg = useTransform(scrollY, [0, 50], ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0)"]); // Now handled via CSS for better theme sync
   const backdropBlur = useTransform(scrollY, [0, 50], ["blur(0px)", "blur(12px)"]);
 
   const btnBg = "#0B0D10";
@@ -62,12 +62,11 @@ export default function Navbar() {
   return (
     <>
       <motion.nav
-        className="fixed top-0 left-0 w-full z-[100] px-6 md:px-12 flex justify-between items-center transition-all duration-300 border-b border-transparent"
+        className="fixed top-0 left-0 w-full z-[100] px-6 md:px-12 flex justify-between items-center transition-all duration-300 border-b border-transparent bg-[var(--section-bg)]/15"
         style={{
           height: useTransform(scrollY, [0, 50], ["90px", "70px"]),
-          backgroundColor: navBg,
           backdropFilter: backdropBlur,
-          borderColor: useTransform(scrollY, [0, 50], ["rgba(255,255,255,0)", "rgba(0,0,0,0.05)"]),
+          borderColor: useTransform(scrollY, [0, 50], ["rgba(255,255,255,0)", "rgba(255,255,255,0.05)"]),
         }}
       >
         {/* REFINED PREMIUM SCROLL LOCATOR */}
@@ -118,8 +117,7 @@ export default function Navbar() {
                 )}
               </AnimatePresence>
               <motion.span
-                style={{ color: activeTextColor }}
-                className="relative z-10 text-[9px] font-bold uppercase tracking-[0.4em] block"
+                className="relative z-10 text-[9px] font-bold uppercase tracking-[0.4em] block text-[var(--section-text)] group-hover:text-white transition-colors duration-300"
               >
                 {link.name}
               </motion.span>

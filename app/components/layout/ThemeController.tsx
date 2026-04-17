@@ -35,16 +35,30 @@ export default function ThemeController({
 
                 const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-                // Use the same refined timing as before
                 const enterThreshold = targetOffset - vHeight - 100;
                 const fullThreshold = targetOffset - (vHeight * 0.4);
 
                 let progress = (scrollY - enterThreshold) / (fullThreshold - enterThreshold);
                 progress = Math.max(0, Math.min(1, progress));
 
-                // Use transform/opacity for GPU acceleration
+                // Background Opacity
                 overlayRef.current.style.opacity = progress.toString();
-                // Use will-change to hint browser
+
+                // Dynamic Text Color (Interpolate from #0B0D10 to #FFFFFF)
+                const textProgress = Math.pow(progress, 1.5); // Slightly non-linear for nicer feel
+                const r = Math.round(11 + (255 - 11) * textProgress);
+                const g = Math.round(13 + (255 - 13) * textProgress);
+                const b = Math.round(16 + (255 - 16) * textProgress);
+
+                document.documentElement.style.setProperty("--section-text", `rgb(${r}, ${g}, ${b})`);
+
+                // Also update the section-bg variable for components that still use it (like Navbar)
+                // From white (255, 255, 255) to dark brown (26, 18, 11)
+                const bgR = Math.round(255 + (26 - 255) * progress);
+                const bgG = Math.round(255 + (18 - 255) * progress);
+                const bgB = Math.round(255 + (11 - 255) * progress);
+                document.documentElement.style.setProperty("--section-bg-rgb", `${bgR}, ${bgG}, ${bgB}`);
+                document.documentElement.style.setProperty("--section-bg", `rgb(${bgR}, ${bgG}, ${bgB})`);
             });
         };
 
@@ -59,18 +73,14 @@ export default function ThemeController({
 
     return (
         <div className="relative">
-            {/* 
-          HIGH PERFORMANCE BACKGROUND LAYER 
-          Using opacity on a fixed div is significantly more performant 
-          than updating background-color on multiple elements.
-      */}
+            {/* FIXED GPU-ACCELERATED BACKGROUND LAYER */}
             <div
                 ref={overlayRef}
                 className="fixed inset-0 z-0 bg-[#1a120b] pointer-events-none opacity-0"
                 style={{ willChange: "opacity" }}
             />
 
-            <div className="relative z-10">
+            <div className="relative z-10" style={{ color: "var(--section-text)" }}>
                 {children}
             </div>
         </div>

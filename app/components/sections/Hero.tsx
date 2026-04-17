@@ -243,10 +243,10 @@ export default function Hero() {
               <iframe
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/lWa5EAfRP34?autoplay=1"
+                src="https://www.youtube-nocookie.com/embed/lWa5EAfRP34?autoplay=1&rel=0"
+                title="Hatim Idrissi Experience"
                 frameBorder="0"
-                allow="autoplay; encrypted-media"
-                referrerPolicy="no-referrer"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               />
               <button
